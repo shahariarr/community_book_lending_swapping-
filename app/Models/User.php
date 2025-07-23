@@ -86,10 +86,19 @@ class User extends Authenticatable
         });
     }
 
+    /**
+     * Get all books owned by this user
+     */
+    public function ownedBooks()
+    {
+        return $this->hasMany(Book::class, 'owner_id');
+    }
 
-
-
-
-
-
+    /**
+     * Get active books owned by this user
+     */
+    public function activeOwnedBooks()
+    {
+        return $this->hasMany(Book::class, 'owner_id')->where('is_active', true);
+    }
 }

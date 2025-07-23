@@ -13,15 +13,33 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'Super Admin']);
-        $admin = Role::create(['name' => 'Admin']);
+        $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);
 
-        $admin->givePermissionTo([
+        $admin = Role::firstOrCreate(['name' => 'Admin']);
+        $admin->syncPermissions([
             'create-user',
             'edit-user',
             'delete-user',
+            'show-user',
+            'destroy-user',
+            'create-book-category',
+            'edit-book-category',
+            'delete-book-category',
+            'show-book-category',
+            'create-book',
+            'edit-book',
+            'delete-book',
+            'show-book',
+            'borrow-book',
+            'return-book',
         ]);
 
-
+        $user = Role::firstOrCreate(['name' => 'User']);
+        $user->syncPermissions([
+            'show-book-category',
+            'show-book',
+            'borrow-book',
+            'return-book',
+        ]);
     }
 }

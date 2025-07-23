@@ -57,27 +57,16 @@ Auth::routes();
 
 
 
-Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth', 'permission']], function () {
+Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], function () {
     Route::get('/dashboard', [Con\HomeController::class, 'index'])->name('dashboard');
     Route::get('/profile', [Con\HomeController::class, 'profile'])->name('users.profile');
-
-
-
-
-
-
-
-
-
-
 
     Route::resources([
         'roles' => Con\RoleController::class,
         'users' => Con\UserController::class,
         'permissions' => Con\PermissionController::class,
-
-
-
+        'book-categories' => Con\BookCategoryController::class,
+        'books' => Con\BookController::class,
     ]);
 });
 
