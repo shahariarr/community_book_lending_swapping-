@@ -46,32 +46,6 @@ class BookCategory extends Model
     }
 
     /**
-     * Get all books in this category
-     */
-    public function books()
-    {
-        return $this->hasMany(Book::class);
-    }
-
-    /**
-     * Get active books in this category
-     */
-    public function activeBooks()
-    {
-        return $this->hasMany(Book::class)->where('is_active', true);
-    }
-
-    /**
-     * Get available books in this category
-     */
-    public function availableBooks()
-    {
-        return $this->hasMany(Book::class)
-                    ->where('is_active', true)
-                    ->where('availability_status', 'Available');
-    }
-
-    /**
      * Scope for active categories
      */
     public function scopeActive($query)
@@ -85,22 +59,6 @@ class BookCategory extends Model
     public function scopeOrdered($query)
     {
         return $query->orderBy('sort_order')->orderBy('name');
-    }
-
-    /**
-     * Get books count for this category
-     */
-    public function getBooksCountAttribute()
-    {
-        return $this->books()->count();
-    }
-
-    /**
-     * Get available books count for this category
-     */
-    public function getAvailableBooksCountAttribute()
-    {
-        return $this->availableBooks()->count();
     }
 
     /**

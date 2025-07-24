@@ -33,7 +33,6 @@
                                         <th>Image</th>
                                         <th>Color</th>
                                         <th>Description</th>
-                                        <th>Books Count</th>
                                         <th>Status</th>
                                         <th>Sort Order</th>
                                         <th>Action</th>
@@ -64,13 +63,12 @@ $(document).ready(function() {
             {data: 'image_preview', name: 'image', orderable: false, searchable: false},
             {data: 'color_preview', name: 'color', orderable: false, searchable: false},
             {data: 'description', name: 'description'},
-            {data: 'books_count', name: 'books_count'},
             {data: 'status', name: 'is_active'},
             {data: 'sort_order', name: 'sort_order'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ],
         responsive: true,
-        order: [[7, 'asc']], // Sort by sort_order by default
+        order: [[6, 'asc']], // Sort by sort_order by default
     });
 });
 </script>

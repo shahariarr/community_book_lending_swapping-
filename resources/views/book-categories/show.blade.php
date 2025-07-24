@@ -22,6 +22,11 @@
                                 <i class="{{ $bookCategory->icon }}" style="color: {{ $bookCategory->color }}"></i>
                             @endif
                             {{ $bookCategory->name }}
+                            @if($bookCategory->is_active)
+                                <span class="badge badge-success ml-2">Active</span>
+                            @else
+                                <span class="badge badge-danger ml-2">Inactive</span>
+                            @endif
                         </h4>
                         <div class="card-header-form">
                             <a href="{{ route('book-categories.index') }}" class="btn btn-primary">
@@ -39,7 +44,7 @@
                                     <img src="{{ asset('storage/category-images/' . $bookCategory->image) }}"
                                          alt="{{ $bookCategory->name }}"
                                          class="img-fluid rounded shadow"
-                                         style="max-height: 200px;"
+                                         style="max-height: 200px; border-radius: 10px;"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                                     <div style="display: none;" class="alert alert-info">
                                         <i class="bi bi-image"></i> Image not found: {{ $bookCategory->image }}
@@ -53,18 +58,18 @@
                                 <table class="table table-borderless">
                                     <tr>
                                         <th width="30%">Name:</th>
-                                        <td>{{ $bookCategory->name }}</td>
+                                        <td><strong>{{ $bookCategory->name }}</strong></td>
                                     </tr>
                                     <tr>
                                         <th>Slug:</th>
-                                        <td><code>{{ $bookCategory->slug }}</code></td>
+                                        <td><code class="bg-light px-2 py-1 rounded">{{ $bookCategory->slug }}</code></td>
                                     </tr>
                                     <tr>
                                         <th>Color:</th>
                                         <td>
                                             <div style="display: inline-flex; align-items: center;">
-                                                <div style="width: 20px; height: 20px; background-color: {{ $bookCategory->color }}; border-radius: 3px; margin-right: 8px;"></div>
-                                                {{ $bookCategory->color }}
+                                                <div style="width: 25px; height: 25px; background-color: {{ $bookCategory->color }}; border-radius: 5px; margin-right: 10px; border: 2px solid #dee2e6;"></div>
+                                                <span class="font-weight-bold">{{ $bookCategory->color }}</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -72,9 +77,10 @@
                                         <th>Icon:</th>
                                         <td>
                                             @if($bookCategory->icon)
-                                                <i class="{{ $bookCategory->icon }}"></i> {{ $bookCategory->icon }}
+                                                <i class="{{ $bookCategory->icon }}" style="font-size: 1.2em; color: {{ $bookCategory->color }};"></i>
+                                                <code class="ml-2 bg-light px-2 py-1 rounded">{{ $bookCategory->icon }}</code>
                                             @else
-                                                <span class="text-muted">No icon</span>
+                                                <span class="text-muted">No icon assigned</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -86,23 +92,39 @@
                                         <th width="30%">Status:</th>
                                         <td>
                                             @if($bookCategory->is_active)
-                                                <span class="badge badge-success">Active</span>
+                                                <span class="badge badge-success px-3 py-2">
+                                                    <i class="fas fa-check-circle"></i> Active
+                                                </span>
                                             @else
-                                                <span class="badge badge-danger">Inactive</span>
+                                                <span class="badge badge-danger px-3 py-2">
+                                                    <i class="fas fa-times-circle"></i> Inactive
+                                                </span>
                                             @endif
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>Sort Order:</th>
-                                        <td>{{ $bookCategory->sort_order }}</td>
+                                        <td>
+                                            <span class="badge badge-info px-3 py-2">
+                                                <i class="fas fa-sort-numeric-down"></i> {{ $bookCategory->sort_order }}
+                                            </span>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th>Total Books:</th>
-                                        <td><span class="badge badge-info">{{ $bookCategory->books_count }}</span></td>
+                                        <th>Created:</th>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="fas fa-calendar"></i> {{ $bookCategory->created_at->format('M d, Y h:i A') }}
+                                            </small>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <th>Available Books:</th>
-                                        <td><span class="badge badge-success">{{ $bookCategory->available_books_count }}</span></td>
+                                        <th>Updated:</th>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock"></i> {{ $bookCategory->updated_at->format('M d, Y h:i A') }}
+                                            </small>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -110,104 +132,154 @@
 
                         @if($bookCategory->description)
                             <hr>
-                            <h6>Description:</h6>
-                            <p class="text-muted">{{ $bookCategory->description }}</p>
+                            <div class="mb-3">
+                                <h6 class="text-primary">
+                                    <i class="fas fa-align-left"></i> Description:
+                                </h6>
+                                <div class="bg-light p-3 rounded">
+                                    <p class="mb-0">{{ $bookCategory->description }}</p>
+                                </div>
+                            </div>
                         @endif
 
                         <hr>
                         <div class="row">
                             <div class="col-md-6">
                                 <small class="text-muted">
+                                    <i class="fas fa-plus-circle text-success"></i>
                                     <strong>Created:</strong> {{ $bookCategory->created_at->format('M d, Y h:i A') }}
                                 </small>
                             </div>
                             <div class="col-md-6 text-right">
                                 <small class="text-muted">
-                                    <strong>Updated:</strong> {{ $bookCategory->updated_at->format('M d, Y h:i A') }}
+                                    <i class="fas fa-edit text-warning"></i>
+                                    <strong>Last Updated:</strong> {{ $bookCategory->updated_at->format('M d, Y h:i A') }}
                                 </small>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                @if($bookCategory->books->count() > 0)
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Books in this Category ({{ $bookCategory->books->count() }})</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Title</th>
-                                            <th>Author</th>
-                                            <th>Owner</th>
-                                            <th>Status</th>
-                                            <th>Condition</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($bookCategory->books as $book)
-                                            <tr>
-                                                <td>{{ $book->title }}</td>
-                                                <td>{{ $book->author }}</td>
-                                                <td>{{ $book->owner->name }}</td>
-                                                <td>
-                                                    <span class="badge {{ $book->status_badge }}">
-                                                        {{ $book->availability_status }}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span class="badge {{ $book->condition_badge }}">
-                                                        {{ $book->condition }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                @endif
             </div>
 
             <div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Quick Stats</h4>
+                        <h4><i class="fas fa-info-circle text-info"></i> Category Information</h4>
                     </div>
                     <div class="card-body">
+                        <div class="text-center mb-3">
+                            @if($bookCategory->icon)
+                                <i class="{{ $bookCategory->icon }}" style="font-size: 3em; color: {{ $bookCategory->color }};"></i>
+                            @else
+                                <i class="fas fa-tag" style="font-size: 3em; color: #6c757d;"></i>
+                            @endif
+                        </div>
+
                         <div class="summary">
-                            <div class="summary-item">
-                                <h6>Total Books</h6>
-                                <h3 class="text-primary">{{ $bookCategory->books_count }}</h3>
+                            <div class="summary-item text-center mb-3">
+                                <h6 class="text-muted">Created Date</h6>
+                                <h5 class="text-primary">{{ $bookCategory->created_at->format('M d, Y') }}</h5>
                             </div>
-                            <div class="summary-item">
-                                <h6>Available Books</h6>
-                                <h3 class="text-success">{{ $bookCategory->available_books_count }}</h3>
+                            <div class="summary-item text-center mb-3">
+                                <h6 class="text-muted">Last Updated</h6>
+                                <h5 class="text-info">{{ $bookCategory->updated_at->format('M d, Y') }}</h5>
                             </div>
-                            <div class="summary-item">
-                                <h6>Borrowed Books</h6>
-                                <h3 class="text-warning">{{ $bookCategory->books->where('availability_status', 'Borrowed')->count() }}</h3>
+                            <div class="summary-item text-center">
+                                <h6 class="text-muted">Status</h6>
+                                @if($bookCategory->is_active)
+                                    <h5 class="text-success">
+                                        <i class="fas fa-check-circle"></i> Active
+                                    </h5>
+                                @else
+                                    <h5 class="text-danger">
+                                        <i class="fas fa-times-circle"></i> Inactive
+                                    </h5>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
 
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Actions</h4>
-                        </div>
-                        <div class="card-body">
-                            <a href="{{ route('books.create', ['category' => $bookCategory->id]) }}" class="btn btn-success btn-block">
-                                <i class="bi bi-plus-circle"></i> Add Book to this Category
-                            </a>
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-tools text-warning"></i> Quick Actions</h4>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ route('book-categories.edit', $bookCategory) }}" class="btn btn-warning btn-block mb-2">
+                            <i class="bi bi-pencil-square"></i> Edit Category
+                        </a>
+
+                        <a href="{{ route('book-categories.index') }}" class="btn btn-primary btn-block mb-2">
+                            <i class="fas fa-list"></i> All Categories
+                        </a>
+
+                        <a href="{{ route('book-categories.create') }}" class="btn btn-success btn-block mb-3">
+                            <i class="fas fa-plus"></i> Add New Category
+                        </a>
+
+                        <hr>
+
+                        <form action="{{ route('book-categories.destroy', $bookCategory) }}" method="POST"
+                              onsubmit="return confirm('Are you sure you want to delete this category? This action cannot be undone.')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-block">
+                                <i class="bi bi-trash"></i> Delete Category
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Category Preview Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-eye text-primary"></i> Category Preview</h4>
+                    </div>
+                    <div class="card-body text-center">
+                        <div class="p-3 rounded" style="background-color: {{ $bookCategory->color }}20; border: 2px solid {{ $bookCategory->color }};">
+                            @if($bookCategory->icon)
+                                <i class="{{ $bookCategory->icon }}" style="font-size: 2em; color: {{ $bookCategory->color }};"></i>
+                            @endif
+                            <h5 class="mt-2 mb-0" style="color: {{ $bookCategory->color }};">{{ $bookCategory->name }}</h5>
+                            @if($bookCategory->description)
+                                <small class="text-muted d-block mt-1">{{ Str::limit($bookCategory->description, 50) }}</small>
+                            @endif
                         </div>
                     </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
+
+@push('css')
+<style>
+.card {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 10px 10px 0 0 !important;
+}
+.summary-item {
+    padding: 10px 0;
+}
+.table th {
+    border: none;
+    font-weight: 600;
+    color: #6c757d;
+}
+.table td {
+    border: none;
+    padding: 8px 0;
+}
+.btn {
+    border-radius: 6px;
+}
+</style>
+@endpush
+
 @endsection

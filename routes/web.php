@@ -66,7 +66,6 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
         'users' => Con\UserController::class,
         'permissions' => Con\PermissionController::class,
         'book-categories' => Con\BookCategoryController::class,
-        'books' => Con\BookController::class,
     ]);
 });
 

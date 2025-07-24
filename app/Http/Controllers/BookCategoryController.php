@@ -21,7 +21,7 @@ class BookCategoryController extends Controller
     {
         try {
             if ($request->ajax()) {
-                $data = BookCategory::with('books')->orderBy('sort_order')->orderBy('name')->get();
+                $data = BookCategory::orderBy('sort_order')->orderBy('name')->get();
 
                 return DataTables::of($data)
                         ->addIndexColumn()
@@ -48,9 +48,6 @@ class BookCategoryController extends Controller
                                 return '<img src="'.asset('storage/category-images/'.$row->image).'" alt="'.$row->name.'" style="width: 40px; height: 40px; object-fit: cover; border-radius: 3px;">';
                             }
                             return '<span class="text-muted">No image</span>';
-                        })
-                        ->addColumn('books_count', function($row){
-                            return $row->books->count();
                         })
                         ->rawColumns(['action', 'status', 'color_preview', 'image_preview'])
                         ->make(true);

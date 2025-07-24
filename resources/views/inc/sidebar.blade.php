@@ -54,23 +54,14 @@
                 </li>
             @endcanany
 
-            <li class="menu-header">Book Management</li>
-            <li class="dropdown {{ Route::is('book-categories.*') || Route::is('books.*') ? 'active' : '' }}">
-                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-book"></i>
-                    <span>Books</span></a>
-                <ul class="dropdown-menu">
-                    <li class="{{ Route::is('book-categories.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('book-categories.index') }}">
-                            <i class="fas fa-tags"></i> Categories
-                        </a>
-                    </li>
-                    <li class="{{ Route::is('books.*') ? 'active' : '' }}">
-                        <a class="nav-link" href="{{ route('books.index') }}">
-                            <i class="fas fa-book-open"></i> All Books
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            @can('index-book-categorie')
+                <li class="menu-header">Categories</li>
+                <li class="{{ Route::is('book-categories.*') ? 'active' : '' }}">
+                    <a class="nav-link" href="{{ route('book-categories.index') }}">
+                        <i class="fas fa-tags"></i> Book Categories
+                    </a>
+                </li>
+            @endcan
         </ul>
 
         <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
