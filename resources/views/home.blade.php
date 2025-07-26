@@ -308,6 +308,429 @@
     </div>
     @endif
 
+    <!-- Category Analytics for All Users -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-pie mr-2"></i> Book Categories Overview</h4>
+                    <div class="card-header-action">
+                        <a href="{{ route('books.index') }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-search"></i> Browse Books
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    @if($isAdmin && isset($stats['category_stats']) && $stats['category_stats']->count() > 0)
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    <strong>Top Category:</strong> 
+                                    @if($stats['top_category'])
+                                        "{{ $stats['top_category']->name }}" has the most books ({{ $stats['top_category']->books_count }} books)
+                                    @else
+                                        No categories with books yet
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @foreach($stats['category_stats']->take(6) as $category)
+                            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                                <div class="card border-left-primary h-100">
+                                    <div class="card-body text-center p-3">
+                                        @if($category->image)
+                                            <img src="{{ asset('storage/category-images/' . $category->image) }}" 
+                                                 alt="{{ $category->name }}" 
+                                                 class="rounded-circle mb-2" 
+                                                 style="width: 40px; height: 40px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center"
+                                                 style="width: 40px; height: 40px; background-color: {{ $category->color ?? '#6777ef' }};">
+                                                <i class="fas fa-tag text-white"></i>
+                                            </div>
+                                        @endif
+                                        <h6 class="font-weight-bold text-truncate">{{ $category->name }}</h6>
+                                        <h4 class="text-primary mb-0">{{ $category->books_count }}</h4>
+                                        <small class="text-muted">books</small>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="row">
+                            @php
+                                $allCategories = \App\Models\BookCategory::where('is_active', true)
+                                    ->withCount(['books' => function($query) {
+                                        $query->where('is_approved', true);
+                                    }])
+                                    ->orderBy('books_count', 'desc')
+                                    ->take(6)
+                                    ->get();
+                            @endphp
+                            @foreach($allCategories as $category)
+                            <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                                <div class="card border-left-primary h-100">
+                                    <div class="card-body text-center p-3">
+                                        @if($category->image)
+                                            <img src="{{ asset('storage/category-images/' . $category->image) }}" 
+                                                 alt="{{ $category->name }}" 
+                                                 class="rounded-circle mb-2" 
+                                                 style="width: 40px; height: 40px; object-fit: cover;">
+                                        @else
+                                            <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center"
+                                                 style="width: 40px; height: 40px; background-color: {{ $category->color ?? '#6777ef' }};">
+                                                <i class="fas fa-tag text-white"></i>
+                                            </div>
+                                        @endif
+                                        <h6 class="font-weight-bold text-truncate">{{ $category->name }}</h6>
+                                        <h4 class="text-primary mb-0">{{ $category->books_count }}</h4>
+                                        <small class="text-muted">books</small>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if($isAdmin)
+    <!-- Advanced Admin Analytics -->
+    <div class="row">
+        <!-- User Activity Insights -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-users-cog mr-2"></i> User Activity Insights</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <i class="fas fa-clock text-success mr-2"></i>
+                                <span>Active Users (30 days)</span>
+                            </div>
+                            <span class="badge badge-success badge-pill">{{ $stats['user_activity_stats']['active_users_last_30_days'] ?? 0 }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <i class="fas fa-book text-primary mr-2"></i>
+                                <span>Users with Books</span>
+                            </div>
+                            <span class="badge badge-primary badge-pill">{{ $stats['user_activity_stats']['users_with_books'] ?? 0 }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <i class="fas fa-hand-holding text-info mr-2"></i>
+                                <span>Users with Loan Requests</span>
+                            </div>
+                            <span class="badge badge-info badge-pill">{{ $stats['user_activity_stats']['users_with_loan_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0 border-bottom-0">
+                            <div>
+                                <i class="fas fa-exchange-alt text-warning mr-2"></i>
+                                <span>Users with Swap Requests</span>
+                            </div>
+                            <span class="badge badge-warning badge-pill">{{ $stats['user_activity_stats']['users_with_swap_requests'] ?? 0 }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loan Request Analytics -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-handshake mr-2"></i> Loan Request Analytics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Pending</span>
+                            <span class="font-weight-bold text-warning">{{ $stats['loan_request_stats']['pending_loan_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" style="width: {{ ($stats['total_loan_requests'] ?? 0) > 0 ? (($stats['loan_request_stats']['pending_loan_requests'] ?? 0) / $stats['total_loan_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Approved</span>
+                            <span class="font-weight-bold text-success">{{ $stats['loan_request_stats']['approved_loan_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: {{ ($stats['total_loan_requests'] ?? 0) > 0 ? (($stats['loan_request_stats']['approved_loan_requests'] ?? 0) / $stats['total_loan_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Completed</span>
+                            <span class="font-weight-bold text-info">{{ $stats['loan_request_stats']['completed_loan_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" style="width: {{ ($stats['total_loan_requests'] ?? 0) > 0 ? (($stats['loan_request_stats']['completed_loan_requests'] ?? 0) / $stats['total_loan_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Rejected</span>
+                            <span class="font-weight-bold text-danger">{{ $stats['loan_request_stats']['rejected_loan_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" style="width: {{ ($stats['total_loan_requests'] ?? 0) > 0 ? (($stats['loan_request_stats']['rejected_loan_requests'] ?? 0) / $stats['total_loan_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Swap Request Analytics -->
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-sync-alt mr-2"></i> Swap Request Analytics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Pending</span>
+                            <span class="font-weight-bold text-warning">{{ $stats['swap_request_stats']['pending_swap_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning" style="width: {{ ($stats['total_swap_requests'] ?? 0) > 0 ? (($stats['swap_request_stats']['pending_swap_requests'] ?? 0) / $stats['total_swap_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Approved</span>
+                            <span class="font-weight-bold text-success">{{ $stats['swap_request_stats']['approved_swap_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-success" style="width: {{ ($stats['total_swap_requests'] ?? 0) > 0 ? (($stats['swap_request_stats']['approved_swap_requests'] ?? 0) / $stats['total_swap_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Completed</span>
+                            <span class="font-weight-bold text-info">{{ $stats['swap_request_stats']['completed_swap_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-info" style="width: {{ ($stats['total_swap_requests'] ?? 0) > 0 ? (($stats['swap_request_stats']['completed_swap_requests'] ?? 0) / $stats['total_swap_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-0">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-muted">Rejected</span>
+                            <span class="font-weight-bold text-danger">{{ $stats['swap_request_stats']['rejected_swap_requests'] ?? 0 }}</span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-danger" style="width: {{ ($stats['total_swap_requests'] ?? 0) > 0 ? (($stats['swap_request_stats']['rejected_swap_requests'] ?? 0) / $stats['total_swap_requests']) * 100 : 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Performance Metrics -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-line mr-2"></i> System Performance Metrics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-percentage fa-2x text-success"></i>
+                                </div>
+                                <h3 class="text-success mb-1">{{ $stats['approval_rate'] }}%</h3>
+                                <p class="text-muted mb-0">Book Approval Rate</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-users fa-2x text-primary"></i>
+                                </div>
+                                <h3 class="text-primary mb-1">{{ round(($stats['user_activity_stats']['users_with_books'] / max($stats['total_users'], 1)) * 100, 1) }}%</h3>
+                                <p class="text-muted mb-0">Users with Books</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-handshake fa-2x text-info"></i>
+                                </div>
+                                <h3 class="text-info mb-1">{{ $stats['total_loan_requests'] > 0 ? round((($stats['loan_request_stats']['approved_loan_requests'] + $stats['loan_request_stats']['completed_loan_requests']) / $stats['total_loan_requests']) * 100, 1) : 0 }}%</h3>
+                                <p class="text-muted mb-0">Loan Success Rate</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 mb-3">
+                            <div class="text-center">
+                                <div class="mb-2">
+                                    <i class="fas fa-exchange-alt fa-2x text-warning"></i>
+                                </div>
+                                <h3 class="text-warning mb-1">{{ $stats['total_swap_requests'] > 0 ? round((($stats['swap_request_stats']['approved_swap_requests'] + $stats['swap_request_stats']['completed_swap_requests']) / $stats['total_swap_requests']) * 100, 1) : 0 }}%</h3>
+                                <p class="text-muted mb-0">Swap Success Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <!-- Statistics Charts Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-bar mr-2"></i> Statistics Overview</h4>
+                    <div class="card-header-action">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-sm btn-primary active" onclick="showChart('vertical')">
+                                <i class="fas fa-chart-bar"></i> Vertical
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="showChart('grouped')">
+                                <i class="fas fa-layer-group"></i> Grouped
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary" onclick="showChart('pie')">
+                                <i class="fas fa-chart-pie"></i> Pie
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Chart Container -->
+                    <div class="chart-container" style="position: relative; height: 400px;">
+                        <canvas id="statisticsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Charts Section -->
+    <div class="row">
+        <!-- User Books Statistics -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-book mr-2"></i> My Books Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="userBooksChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Request Statistics -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-exchange-alt mr-2"></i> Request Statistics</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="requestChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if($isAdmin)
+    <!-- Admin Charts Section -->
+    <div class="row">
+        <!-- Category Distribution Chart -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-pie mr-2"></i> Books by Category</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 350px;">
+                        <canvas id="categoryDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends Chart -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-line mr-2"></i> Monthly Growth Trends</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 350px;">
+                        <canvas id="monthlyTrendsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Status Analytics -->
+    <div class="row">
+        <!-- Loan Request Status Chart -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-handshake mr-2"></i> Loan Request Status Distribution</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="loanRequestStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Swap Request Status Chart -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-exchange-alt mr-2"></i> Swap Request Status Distribution</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="swapRequestStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Overview Chart -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-tachometer-alt mr-2"></i> System Overview - Comparative Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container" style="position: relative; height: 350px;">
+                        <canvas id="adminSystemChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Recent Activity & Latest Books -->
     <div class="row">
         <!-- Recent Activity -->
@@ -468,3 +891,742 @@
 
 
 @endsection
+
+@push('scripts')
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// Global chart variables
+let statisticsChart, userBooksChart, requestChart, adminSystemChart, categoryDistributionChart, 
+    monthlyTrendsChart, loanRequestStatusChart, swapRequestStatusChart;
+
+// Statistics data from backend
+const statsData = @json($stats);
+
+// Color schemes
+const colors = {
+    primary: '#6777ef',
+    success: '#47c363',
+    warning: '#ffa426',
+    danger: '#fc544b',
+    info: '#3abaf4',
+    dark: '#2c2c54',
+    secondary: '#6c757d',
+    purple: '#A855F7',
+    pink: '#EC4899'
+};
+
+const gradientColors = [
+    'rgba(103, 119, 239, 0.8)',
+    'rgba(71, 195, 99, 0.8)',
+    'rgba(255, 164, 38, 0.8)',
+    'rgba(252, 84, 75, 0.8)',
+    'rgba(58, 186, 244, 0.8)',
+    'rgba(168, 85, 247, 0.8)',
+    'rgba(236, 72, 153, 0.8)',
+    'rgba(108, 117, 125, 0.8)'
+];
+
+// Initialize charts when document is ready
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMainChart();
+    initializeUserBooksChart();
+    initializeRequestChart();
+    @if($isAdmin)
+    initializeAdminCharts();
+    @endif
+});
+
+// Main Statistics Chart with different types
+function initializeMainChart() {
+    const ctx = document.getElementById('statisticsChart').getContext('2d');
+    
+    const chartData = {
+        labels: ['My Books', 'Approved Books', 'Pending Books', 'Available Books', 'My Loan Requests', 'Loan Requests for My Books', 'My Swap Requests', 'Swap Requests for My Books'],
+        datasets: [{
+            label: 'Count',
+            data: [
+                statsData.my_books || 0,
+                statsData.my_approved_books || 0,
+                statsData.my_pending_books || 0,
+                statsData.available_books || 0,
+                statsData.my_loan_requests || 0,
+                statsData.loan_requests_for_my_books || 0,
+                statsData.my_swap_requests || 0,
+                statsData.swap_requests_for_my_books || 0
+            ],
+            backgroundColor: gradientColors,
+            borderColor: gradientColors.map(color => color.replace('0.8', '1')),
+            borderWidth: 2,
+            borderRadius: 4
+        }]
+    };
+
+    statisticsChart = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Your Book & Request Statistics',
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
+            }
+        }
+    });
+}
+
+// User Books Analysis Chart (Doughnut)
+function initializeUserBooksChart() {
+    const ctx = document.getElementById('userBooksChart').getContext('2d');
+    
+    userBooksChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Approved Books', 'Pending Approval', 'Available to Others'],
+            datasets: [{
+                data: [
+                    statsData.my_approved_books || 0,
+                    statsData.my_pending_books || 0,
+                    statsData.available_books || 0
+                ],
+                backgroundColor: [colors.success, colors.warning, colors.info],
+                borderWidth: 3,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Book Status Distribution',
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    }
+                }
+            },
+            animation: {
+                animateRotate: true,
+                duration: 1500
+            }
+        }
+    });
+}
+
+// Request Statistics Chart (Horizontal Bar)
+function initializeRequestChart() {
+    const ctx = document.getElementById('requestChart').getContext('2d');
+    
+    requestChart = new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+            labels: ['My Loan Requests', 'Loan Requests Received', 'My Swap Requests', 'Swap Requests Received'],
+            datasets: [{
+                label: 'Requests',
+                data: [
+                    statsData.my_loan_requests || 0,
+                    statsData.loan_requests_for_my_books || 0,
+                    statsData.my_swap_requests || 0,
+                    statsData.swap_requests_for_my_books || 0
+                ],
+                backgroundColor: [colors.primary, colors.dark, colors.purple, colors.pink],
+                borderColor: [colors.primary, colors.dark, colors.purple, colors.pink],
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: {
+                legend: {
+                    display: false
+                },
+                title: {
+                    display: true,
+                    text: 'Request Activity Overview',
+                    font: {
+                        size: 14,
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            },
+            animation: {
+                duration: 1200,
+                easing: 'easeOutBounce'
+            }
+        }
+    });
+}
+
+@if($isAdmin)
+// Admin Charts
+function initializeAdminCharts() {
+    // Category Distribution Chart
+    const categoryCtx = document.getElementById('categoryDistributionChart').getContext('2d');
+    const categoryData = @json($stats['category_stats'] ?? []);
+    
+    categoryDistributionChart = new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: categoryData.map(cat => cat.name),
+            datasets: [{
+                data: categoryData.map(cat => cat.books_count),
+                backgroundColor: [
+                    colors.primary, colors.success, colors.warning, colors.danger, 
+                    colors.info, colors.purple, colors.pink, colors.secondary
+                ],
+                borderWidth: 3,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        usePointStyle: true,
+                        generateLabels: function(chart) {
+                            const data = chart.data;
+                            return data.labels.map((label, i) => ({
+                                text: `${label} (${data.datasets[0].data[i]})`,
+                                fillStyle: data.datasets[0].backgroundColor[i],
+                                strokeStyle: data.datasets[0].backgroundColor[i],
+                                pointStyle: 'circle'
+                            }));
+                        }
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Book Distribution by Category',
+                    font: { size: 16, weight: 'bold' }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label;
+                            const value = context.raw;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return `${label}: ${value} books (${percentage}%)`;
+                        }
+                    }
+                }
+            },
+            animation: { animateRotate: true, duration: 1500 }
+        }
+    });
+
+    // Monthly Trends Chart
+    const trendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
+    const monthlyData = @json($stats['monthly_trends'] ?? []);
+    const months = Object.keys(monthlyData);
+    
+    monthlyTrendsChart = new Chart(trendsCtx, {
+        type: 'line',
+        data: {
+            labels: months,
+            datasets: [
+                {
+                    label: 'New Users',
+                    data: months.map(month => monthlyData[month].users),
+                    borderColor: colors.primary,
+                    backgroundColor: colors.primary + '20',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: colors.primary,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                },
+                {
+                    label: 'New Books',
+                    data: months.map(month => monthlyData[month].books),
+                    borderColor: colors.success,
+                    backgroundColor: colors.success + '20',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: colors.success,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                },
+                {
+                    label: 'Loan Requests',
+                    data: months.map(month => monthlyData[month].loan_requests),
+                    borderColor: colors.warning,
+                    backgroundColor: colors.warning + '20',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: colors.warning,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                },
+                {
+                    label: 'Swap Requests',
+                    data: months.map(month => monthlyData[month].swap_requests),
+                    borderColor: colors.info,
+                    backgroundColor: colors.info + '20',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointBackgroundColor: colors.info,
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { usePointStyle: true, padding: 20 }
+                },
+                title: {
+                    display: true,
+                    text: 'Monthly Growth Trends (Last 12 Months)',
+                    font: { size: 16, weight: 'bold' }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { ticks: { maxRotation: 45 } }
+            },
+            interaction: { intersect: false, mode: 'index' },
+            animation: { duration: 1500, easing: 'easeOutQuart' }
+        }
+    });
+
+    // Loan Request Status Chart
+    const loanStatusCtx = document.getElementById('loanRequestStatusChart').getContext('2d');
+    const loanStats = @json($stats['loan_request_stats'] ?? []);
+    
+    loanRequestStatusChart = new Chart(loanStatusCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Pending', 'Approved', 'Completed', 'Rejected'],
+            datasets: [{
+                label: 'Loan Requests',
+                data: [
+                    loanStats.pending_loan_requests || 0,
+                    loanStats.approved_loan_requests || 0,
+                    loanStats.completed_loan_requests || 0,
+                    loanStats.rejected_loan_requests || 0
+                ],
+                backgroundColor: [colors.warning, colors.success, colors.info, colors.danger],
+                borderColor: [colors.warning, colors.success, colors.info, colors.danger],
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Loan Request Status Distribution',
+                    font: { size: 14, weight: 'bold' }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            animation: { duration: 1000, easing: 'easeOutBounce' }
+        }
+    });
+
+    // Swap Request Status Chart
+    const swapStatusCtx = document.getElementById('swapRequestStatusChart').getContext('2d');
+    const swapStats = @json($stats['swap_request_stats'] ?? []);
+    
+    swapRequestStatusChart = new Chart(swapStatusCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Pending', 'Approved', 'Completed', 'Rejected'],
+            datasets: [{
+                label: 'Swap Requests',
+                data: [
+                    swapStats.pending_swap_requests || 0,
+                    swapStats.approved_swap_requests || 0,
+                    swapStats.completed_swap_requests || 0,
+                    swapStats.rejected_swap_requests || 0
+                ],
+                backgroundColor: [colors.warning, colors.success, colors.info, colors.danger],
+                borderColor: [colors.warning, colors.success, colors.info, colors.danger],
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Swap Request Status Distribution',
+                    font: { size: 14, weight: 'bold' }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } }
+            },
+            animation: { duration: 1000, easing: 'easeOutBounce' }
+        }
+    });
+
+    // System Overview Chart (Grouped Bar)
+    const systemCtx = document.getElementById('adminSystemChart').getContext('2d');
+    
+    adminSystemChart = new Chart(systemCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Users', 'Books', 'Categories', 'Loan Requests', 'Swap Requests'],
+            datasets: [
+                {
+                    label: 'Total',
+                    data: [
+                        statsData.total_users || 0,
+                        statsData.total_books || 0,
+                        statsData.active_categories || 0,
+                        statsData.total_loan_requests || 0,
+                        statsData.total_swap_requests || 0
+                    ],
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary,
+                    borderWidth: 2,
+                    borderRadius: 4
+                },
+                {
+                    label: 'Active/Pending',
+                    data: [
+                        statsData.user_activity_stats?.active_users_last_30_days || 0,
+                        statsData.pending_book_approvals || 0,
+                        0, // No pending categories
+                        loanStats.pending_loan_requests || 0,
+                        swapStats.pending_swap_requests || 0
+                    ],
+                    backgroundColor: colors.warning,
+                    borderColor: colors.warning,
+                    borderWidth: 2,
+                    borderRadius: 4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { usePointStyle: true, padding: 20 }
+                },
+                title: {
+                    display: true,
+                    text: 'System-wide Statistics Overview',
+                    font: { size: 16, weight: 'bold' }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { ticks: { maxRotation: 0 } }
+            },
+            animation: { duration: 1000, easing: 'easeOutQuart' }
+        }
+    });
+}
+@endif
+
+// Function to switch between chart types
+function showChart(type) {
+    // Update button states
+    const buttons = document.querySelectorAll('.btn-group .btn');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.classList.add('btn-outline-primary');
+        btn.classList.remove('btn-primary');
+    });
+    event.target.classList.add('active', 'btn-primary');
+    event.target.classList.remove('btn-outline-primary');
+
+    // Destroy existing chart
+    if (statisticsChart) {
+        statisticsChart.destroy();
+    }
+
+    const ctx = document.getElementById('statisticsChart').getContext('2d');
+    
+    const chartData = {
+        labels: ['My Books', 'Approved', 'Pending', 'Available', 'My Loans', 'Loans Received', 'My Swaps', 'Swaps Received'],
+        datasets: [{
+            label: 'Count',
+            data: [
+                statsData.my_books || 0,
+                statsData.my_approved_books || 0,
+                statsData.my_pending_books || 0,
+                statsData.available_books || 0,
+                statsData.my_loan_requests || 0,
+                statsData.loan_requests_for_my_books || 0,
+                statsData.my_swap_requests || 0,
+                statsData.swap_requests_for_my_books || 0
+            ],
+            backgroundColor: gradientColors,
+            borderColor: gradientColors.map(color => color.replace('0.8', '1')),
+            borderWidth: 2
+        }]
+    };
+
+    let chartConfig = {
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: type === 'pie'
+                },
+                title: {
+                    display: true,
+                    text: `Your Statistics - ${type.charAt(0).toUpperCase() + type.slice(1)} View`,
+                    font: {
+                        size: 16,
+                        weight: 'bold'
+                    }
+                }
+            },
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
+            }
+        }
+    };
+
+    // Configure based on chart type
+    switch(type) {
+        case 'vertical':
+            chartConfig.type = 'bar';
+            chartConfig.options.scales = {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { ticks: { maxRotation: 45 } }
+            };
+            chartConfig.data.datasets[0].borderRadius = 4;
+            break;
+            
+        case 'grouped':
+            chartConfig.type = 'bar';
+            chartConfig.data.datasets = [
+                {
+                    label: 'Books',
+                    data: [statsData.my_books || 0, statsData.my_approved_books || 0, statsData.my_pending_books || 0, statsData.available_books || 0],
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary,
+                    borderWidth: 2,
+                    borderRadius: 4
+                },
+                {
+                    label: 'Requests',
+                    data: [statsData.my_loan_requests || 0, statsData.loan_requests_for_my_books || 0, statsData.my_swap_requests || 0, statsData.swap_requests_for_my_books || 0],
+                    backgroundColor: colors.success,
+                    borderColor: colors.success,
+                    borderWidth: 2,
+                    borderRadius: 4
+                }
+            ];
+            chartConfig.data.labels = ['My Books', 'Approved', 'Pending', 'Available'];
+            chartConfig.options.scales = {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { ticks: { maxRotation: 0 } }
+            };
+            chartConfig.options.plugins.legend.display = true;
+            break;
+            
+        case 'pie':
+            chartConfig.type = 'pie';
+            chartConfig.data.datasets[0].borderWidth = 3;
+            chartConfig.data.datasets[0].borderColor = '#fff';
+            delete chartConfig.options.scales;
+            chartConfig.options.plugins.legend = {
+                position: 'bottom',
+                labels: { padding: 20, usePointStyle: true }
+            };
+            break;
+    }
+
+    statisticsChart = new Chart(ctx, chartConfig);
+}
+
+// Utility function for responsive design
+function handleResize() {
+    if (statisticsChart) statisticsChart.resize();
+    if (userBooksChart) userBooksChart.resize();
+    if (requestChart) requestChart.resize();
+    @if($isAdmin)
+    if (adminSystemChart) adminSystemChart.resize();
+    if (categoryDistributionChart) categoryDistributionChart.resize();
+    if (monthlyTrendsChart) monthlyTrendsChart.resize();
+    if (loanRequestStatusChart) loanRequestStatusChart.resize();
+    if (swapRequestStatusChart) swapRequestStatusChart.resize();
+    @endif
+}
+
+// Add resize event listener
+window.addEventListener('resize', handleResize);
+
+// Add some animations and interactions
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate statistics cards on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+            }
+        });
+    }, observerOptions);
+
+    // Observe all chart containers
+    document.querySelectorAll('.chart-container').forEach(container => {
+        observer.observe(container.parentElement);
+    });
+});
+
+// Add CSS animations
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .chart-container {
+        opacity: 0;
+        animation: fadeInUp 0.6s ease-out 0.2s forwards;
+    }
+    
+    .btn-group .btn {
+        transition: all 0.3s ease;
+    }
+    
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .border-left-primary {
+        border-left: 4px solid #6777ef !important;
+    }
+    
+    .progress {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        border-radius: 10px;
+    }
+    
+    .list-group-item {
+        border: none;
+        padding: 0.75rem 0;
+    }
+    
+    .list-group-item:last-child {
+        border-bottom: none !important;
+    }
+    
+    .badge-pill {
+        border-radius: 50px;
+        padding: 0.5em 0.75em;
+        font-size: 0.75em;
+        font-weight: 600;
+    }
+    
+    .alert {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+`;
+document.head.appendChild(style);
+</script>
+@endpush
