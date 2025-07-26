@@ -26,6 +26,12 @@ class User extends Authenticatable
         'password',
         'image',
         'google_id',
+        'phone',
+        'location',
+        'bio',
+        'reading_interests',
+        'is_active',
+        'last_active_at',
     ];
 
     /**
@@ -46,8 +52,56 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-
+        'reading_interests' => 'array',
+        'last_active_at' => 'datetime',
+        'is_active' => 'boolean',
     ];
+
+    // Relationships
+    public function books()
+    {
+        return $this->hasMany(Book::class);
+    }
+
+    public function bookRequests()
+    {
+        return $this->hasMany(BookRequest::class);
+    }
+
+    public function loanRequestsAsBorrower()
+    {
+        return $this->hasMany(LoanRequest::class, 'borrower_id');
+    }
+
+    public function loanRequestsAsLender()
+    {
+        return $this->hasMany(LoanRequest::class, 'lender_id');
+    }
+
+    public function swapRequestsAsRequester()
+    {
+        return $this->hasMany(SwapRequest::class, 'requester_id');
+    }
+
+    public function swapRequestsAsOwner()
+    {
+        return $this->hasMany(SwapRequest::class, 'owner_id');
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function getInitialsAttribute()
+    {
+        $names = explode(' ', $this->name);
+        $initials = '';
+        foreach ($names as $name) {
+            $initials .= strtoupper(substr($name, 0, 1));
+        }
+        return $initials;
+    }
 
 
 

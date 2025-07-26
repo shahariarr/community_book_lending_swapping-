@@ -62,6 +62,14 @@ class BookCategory extends Model
     }
 
     /**
+     * Get all books that belong to this category
+     */
+    public function books()
+    {
+        return $this->hasMany(Book::class, 'category_id');
+    }
+
+    /**
      * Get the full URL for the category image
      */
     public function getImageUrlAttribute()
