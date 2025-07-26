@@ -186,4 +186,16 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Auto Approve Books
+    |--------------------------------------------------------------------------
+    |
+    | When this is set to true, books will be automatically approved when
+    | created, skipping the admin approval process. Useful for development.
+    |
+    */
+
+    'auto_approve_books' => env('AUTO_APPROVE_BOOKS', false),
+
 ];

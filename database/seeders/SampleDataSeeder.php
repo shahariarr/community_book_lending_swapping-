@@ -85,6 +85,7 @@ class SampleDataSeeder extends Seeder
                 'language' => 'en',
                 'page_count' => 400,
                 'published_date' => '2017-06-13',
+                'image' => 'book_images/seven_husbands_evelyn_hugo.jpg',
             ],
             [
                 'title' => 'Atomic Habits',
@@ -97,6 +98,7 @@ class SampleDataSeeder extends Seeder
                 'language' => 'en',
                 'page_count' => 320,
                 'published_date' => '2018-10-16',
+                'image' => 'book_images/atomic_habits.jpg',
             ],
             [
                 'title' => 'The Midnight Library',
@@ -109,6 +111,7 @@ class SampleDataSeeder extends Seeder
                 'language' => 'en',
                 'page_count' => 288,
                 'published_date' => '2020-08-13',
+                'image' => 'book_images/midnight_library.jpg',
             ],
             [
                 'title' => 'Educated',
@@ -121,6 +124,7 @@ class SampleDataSeeder extends Seeder
                 'language' => 'en',
                 'page_count' => 334,
                 'published_date' => '2018-02-20',
+                'image' => 'book_images/educated.jpg',
             ],
             [
                 'title' => 'The Alchemist',
@@ -133,6 +137,7 @@ class SampleDataSeeder extends Seeder
                 'language' => 'en',
                 'page_count' => 163,
                 'published_date' => '1988-01-01',
+                'image' => 'book_images/alchemist.jpg',
             ],
             [
                 'title' => 'Dune',
@@ -145,6 +150,7 @@ class SampleDataSeeder extends Seeder
                 'language' => 'en',
                 'page_count' => 688,
                 'published_date' => '1965-08-01',
+                'image' => 'book_images/dune.jpg',
             ],
         ];
 
@@ -165,6 +171,7 @@ class SampleDataSeeder extends Seeder
                     'language' => $bookData['language'],
                     'page_count' => $bookData['page_count'],
                     'published_date' => $bookData['published_date'],
+                    'image' => $bookData['image'],
                     'is_approved' => true,
                     'approved_at' => now(),
                     'status' => 'available',

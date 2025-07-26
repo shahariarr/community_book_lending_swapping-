@@ -1,5 +1,8 @@
 @extends('layouts.back')
 @section('title', 'Profile')
+@php
+use Illuminate\Support\Str;
+@endphp
 @push('styles')
     <link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.min.css') }}">
     <style>
@@ -49,6 +52,40 @@ $user = Auth::user();
                             <label for="email" class="col-md-4 col-form-label text-md-end text-start"><strong>Email Address:</strong></label>
                             <div class="col-md-6" style="line-height: 35px;">
                                 {{ $user->email }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="phone" class="col-md-4 col-form-label text-md-end text-start"><strong>Phone:</strong></label>
+                            <div class="col-md-6" style="line-height: 35px;">
+                                {{ $user->phone ?? 'Not provided' }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="location" class="col-md-4 col-form-label text-md-end text-start"><strong>Location:</strong></label>
+                            <div class="col-md-6" style="line-height: 35px;">
+                                {{ $user->location ?? 'Not provided' }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="bio" class="col-md-4 col-form-label text-md-end text-start"><strong>Bio:</strong></label>
+                            <div class="col-md-6" style="line-height: 35px;">
+                                {{ Str::limit($user->bio ?? 'No bio provided', 100) }}
+                            </div>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <label for="reading_interests" class="col-md-4 col-form-label text-md-end text-start"><strong>Reading Interests:</strong></label>
+                            <div class="col-md-6" style="line-height: 35px;">
+                                @if($user->reading_interests && is_array($user->reading_interests))
+                                    @foreach($user->reading_interests as $interest)
+                                        <span class="badge bg-secondary me-1">{{ $interest }}</span>
+                                    @endforeach
+                                @else
+                                    Not specified
+                                @endif
                             </div>
                         </div>
 
@@ -107,6 +144,47 @@ $user = Auth::user();
                                 <label for="password_confirmation" class="col-md-4 col-form-label text-md-end text-start">Confirm Password</label>
                                 <div class="col-md-6">
                                     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="phone" class="col-md-4 col-form-label text-md-end text-start">Phone</label>
+                                <div class="col-md-6">
+                                    <input type="tel" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
+                                    @if ($errors->has('phone'))
+                                        <span class="text-danger">{{ $errors->first('phone') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="location" class="col-md-4 col-form-label text-md-end text-start">Location</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control @error('location') is-invalid @enderror" id="location" name="location" value="{{ old('location', $user->location) }}" placeholder="City, Country">
+                                    @if ($errors->has('location'))
+                                        <span class="text-danger">{{ $errors->first('location') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="bio" class="col-md-4 col-form-label text-md-end text-start">Bio</label>
+                                <div class="col-md-6">
+                                    <textarea class="form-control @error('bio') is-invalid @enderror" id="bio" name="bio" rows="3" placeholder="Tell us about yourself...">{{ old('bio', $user->bio) }}</textarea>
+                                    @if ($errors->has('bio'))
+                                        <span class="text-danger">{{ $errors->first('bio') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mb-3 row">
+                                <label for="reading_interests" class="col-md-4 col-form-label text-md-end text-start">Reading Interests</label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control @error('reading_interests') is-invalid @enderror" id="reading_interests" name="reading_interests" value="{{ old('reading_interests', is_array($user->reading_interests) ? implode(', ', $user->reading_interests) : '') }}" placeholder="Fiction, Science, History, etc. (comma separated)">
+                                    <small class="form-text text-muted">Enter your reading interests separated by commas</small>
+                                    @if ($errors->has('reading_interests'))
+                                        <span class="text-danger">{{ $errors->first('reading_interests') }}</span>
+                                    @endif
                                 </div>
                             </div>
 

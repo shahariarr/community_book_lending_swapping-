@@ -61,6 +61,54 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
     Route::get('/dashboard', [Con\HomeController::class, 'index'])->name('dashboard');
     Route::get('/profile', [Con\HomeController::class, 'profile'])->name('users.profile');
 
+    // Books Management
+    Route::get('/books', [Con\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/search', [Con\BookController::class, 'search'])->name('books.search');
+    Route::get('/books/my-books', [Con\BookController::class, 'myBooks'])->name('books.my-books');
+    Route::get('/books/create', [Con\BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [Con\BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}', [Con\BookController::class, 'show'])->name('books.show');
+    Route::get('/books/{book}/edit', [Con\BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [Con\BookController::class, 'update'])->name('books.update');
+    Route::delete('/books/{book}', [Con\BookController::class, 'destroy'])->name('books.destroy');
+
+    // Loan Requests
+    Route::get('/loan-requests', [Con\LoanRequestController::class, 'index'])->name('loan-requests.index');
+    Route::post('/loan-requests', [Con\LoanRequestController::class, 'store'])->name('loan-requests.store');
+    Route::get('/loan-requests/{loanRequest}', [Con\LoanRequestController::class, 'show'])->name('loan-requests.show');
+    Route::post('/loan-requests/{loanRequest}/approve', [Con\LoanRequestController::class, 'approve'])->name('loan-requests.approve');
+    Route::post('/loan-requests/{loanRequest}/reject', [Con\LoanRequestController::class, 'reject'])->name('loan-requests.reject');
+    Route::post('/loan-requests/{loanRequest}/cancel', [Con\LoanRequestController::class, 'cancel'])->name('loan-requests.cancel');
+    Route::post('/loan-requests/{loanRequest}/return', [Con\LoanRequestController::class, 'markReturned'])->name('loan-requests.return');
+
+    // Swap Requests
+    Route::get('/swap-requests', [Con\SwapRequestController::class, 'index'])->name('swap-requests.index');
+    Route::get('/swap-requests/create/{book}', [Con\SwapRequestController::class, 'create'])->name('swap-requests.create');
+    Route::post('/swap-requests', [Con\SwapRequestController::class, 'store'])->name('swap-requests.store');
+    Route::get('/swap-requests/{swapRequest}', [Con\SwapRequestController::class, 'show'])->name('swap-requests.show');
+    Route::post('/swap-requests/{swapRequest}/approve', [Con\SwapRequestController::class, 'approve'])->name('swap-requests.approve');
+    Route::post('/swap-requests/{swapRequest}/reject', [Con\SwapRequestController::class, 'reject'])->name('swap-requests.reject');
+    Route::post('/swap-requests/{swapRequest}/cancel', [Con\SwapRequestController::class, 'cancel'])->name('swap-requests.cancel');
+
+    // Admin Routes
+    Route::group(['middleware' => 'role:Admin', 'prefix' => 'admin', 'as' => 'admin.'], function () {
+        Route::get('/dashboard', [Con\Admin\AdminController::class, 'dashboard'])->name('dashboard');
+        Route::get('/books', [Con\Admin\AdminController::class, 'allBooks'])->name('books.index');
+        Route::get('/books/pending', [Con\Admin\AdminController::class, 'pendingBooks'])->name('books.pending');
+        Route::get('/books/all', [Con\Admin\AdminController::class, 'allBooks'])->name('books.all');
+        Route::get('/books/{book}', [Con\Admin\AdminController::class, 'bookDetails'])->name('books.show');
+        Route::patch('/books/{book}/approve', [Con\Admin\AdminController::class, 'approveBook'])->name('books.approve');
+        Route::delete('/books/{book}/reject', [Con\Admin\AdminController::class, 'rejectBook'])->name('books.reject');
+        Route::delete('/books/{book}', [Con\Admin\AdminController::class, 'quickReject'])->name('books.quick-reject');
+        Route::get('/users', [Con\Admin\AdminController::class, 'allUsers'])->name('users.index');
+        Route::get('/users/{user}', [Con\Admin\AdminController::class, 'userDetails'])->name('users.show');
+        Route::post('/users/{user}/toggle-status', [Con\Admin\AdminController::class, 'toggleUserStatus'])->name('users.toggle-status');
+        Route::get('/loan-requests', [Con\Admin\AdminController::class, 'loanRequests'])->name('loan-requests.index');
+        Route::get('/swap-requests', [Con\Admin\AdminController::class, 'swapRequests'])->name('swap-requests.index');
+        Route::get('/reports', [Con\Admin\AdminController::class, 'reports'])->name('reports.index');
+        Route::get('/categories', [Con\BookCategoryController::class, 'index'])->name('categories.index');
+    });
+
     Route::resources([
         'roles' => Con\RoleController::class,
         'users' => Con\UserController::class,

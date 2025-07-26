@@ -39,6 +39,12 @@ class PermissionSeeder extends Seeder
             'show-book',
             'borrow-book',
             'return-book',
+            'manage-books',
+            'approve-book',
+            'reject-book',
+            'view-book-requests',
+            'view-pending-books',
+            'view-all-books',
          ];
 
           // Looping and Inserting Array's Permissions into Permission Table

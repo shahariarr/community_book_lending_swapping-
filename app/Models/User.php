@@ -30,6 +30,7 @@ class User extends Authenticatable
         'location',
         'bio',
         'reading_interests',
+        'unique_id',
         'is_active',
         'last_active_at',
     ];

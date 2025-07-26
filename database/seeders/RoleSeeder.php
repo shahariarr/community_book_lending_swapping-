@@ -32,6 +32,12 @@ class RoleSeeder extends Seeder
             'show-book',
             'borrow-book',
             'return-book',
+            'manage-books',
+            'approve-book',
+            'reject-book',
+            'view-book-requests',
+            'view-pending-books',
+            'view-all-books',
         ]);
 
         $user = Role::firstOrCreate(['name' => 'User']);

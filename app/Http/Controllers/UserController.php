@@ -123,6 +123,14 @@ class UserController extends Controller
     $input = $request->all();
     $path = 'images';
 
+    // Handle reading interests - convert comma-separated string to array
+    if (!empty($input['reading_interests'])) {
+        $interests = array_map('trim', explode(',', $input['reading_interests']));
+        $input['reading_interests'] = array_filter($interests); // Remove empty values
+    } else {
+        $input['reading_interests'] = null;
+    }
+
     if ($request->hasFile('image')) {
         $old_image = $user->image;
         if ($old_image && file_exists(public_path('storage/' . $old_image))) {
