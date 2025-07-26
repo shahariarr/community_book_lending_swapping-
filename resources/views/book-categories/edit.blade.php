@@ -106,8 +106,8 @@
 
                             <div class="form-group">
                                 <label for="description">Description</label>
-                                <textarea name="description" id="description" rows="4"
-                                          class="form-control @error('description') is-invalid @enderror"
+                                <textarea name="description" id="description"
+                                          class="form-control summernote @error('description') is-invalid @enderror"
                                           placeholder="Enter category description...">{{ old('description', $bookCategory->description) }}</textarea>
                                 @error('description')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -137,4 +137,24 @@
         </div>
     </div>
 </section>
+
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $('.summernote').summernote({
+        height: 150,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+});
+</script>
+@endpush

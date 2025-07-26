@@ -80,8 +80,8 @@
 
                         <div class="form-group">
                             <label for="description">Description <span class="text-danger">*</span></label>
-                            <textarea class="form-control @error('description') is-invalid @enderror"
-                                      id="description" name="description" rows="4" required>{{ old('description', $book->description) }}</textarea>
+                            <textarea class="form-control summernote @error('description') is-invalid @enderror"
+                                      id="description" name="description" required>{{ old('description', $book->description) }}</textarea>
                             <small class="form-text text-muted">Describe the book's content, condition, or any special notes.</small>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -232,3 +232,22 @@
 </section>
 
 @endsection
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+    $('.summernote').summernote({
+        height: 150,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ]
+    });
+});
+</script>
+@endpush
