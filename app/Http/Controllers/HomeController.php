@@ -110,7 +110,7 @@ class HomeController extends Controller
             for ($i = 11; $i >= 0; $i--) {
                 $date = now()->subMonths($i);
                 $monthKey = $date->format('M Y');
-                
+
                 $monthlyTrends[$monthKey] = [
                     'users' => User::whereYear('created_at', $date->year)
                         ->whereMonth('created_at', $date->month)->count(),
@@ -125,7 +125,7 @@ class HomeController extends Controller
 
             // Calculate approval rate
             $totalBooks = Book::count();
-            $approvalRate = $totalBooks > 0 ? 
+            $approvalRate = $totalBooks > 0 ?
                 round((Book::where('is_approved', true)->count() / $totalBooks) * 100, 1) : 0;
 
             // Update stats array with admin data

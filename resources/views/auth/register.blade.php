@@ -67,8 +67,9 @@
 
               <div class="row">
                 <div class="col-12">
-                  <a href="{{ route('auth.google') }}" class="btn btn-danger btn-lg btn-block">
-                    <i class="fab fa-google"></i> Continue with Google
+                  <a href="{{ route('auth.google') }}" class="btn btn-lg btn-block d-flex align-items-center justify-content-center google-btn" style="background-color: #ffffff; border: 1px solid #dadce0; color: #3c4043; font-weight: 500; text-decoration: none; padding: 12px 24px; border-radius: 6px; transition: all 0.2s ease-in-out; box-shadow: 0 1px 3px rgba(0,0,0,0.1);" onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.backgroundColor='#ffffff'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)'">
+                    <img src="{{ asset('images/google-logo.svg') }}" alt="Google" width="20" height="20" class="me-2" style="margin-right: 10px;">
+                    Continue with Google
                   </a>
                 </div>
               </div>
