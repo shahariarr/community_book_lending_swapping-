@@ -17,7 +17,7 @@
 
                 <div class="col-lg-5">
                     <div class="banner-rent-sale-form style-two wow animate__animated animate__fadeInUp delay-0-6s">
-                        <form class="rent-sale-form wow animate__animated animate__fadeInUp delay-0-8s">
+                        <form class="rent-sale-form wow animate__animated animate__fadeInUp delay-0-8s" action="{{ route('frontend.browse-books') }}" method="GET">
                             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                 <li class="nav-item style-two">
                                     <span>Find a book:</span>
@@ -39,18 +39,19 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="form-group">
-                                                <input type="text" class="form-control"
+                                                <input type="text" name="search" class="form-control"
                                                     placeholder="Search by title, author, or description...">
+                                                <input type="hidden" name="availability_type" value="swap">
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="form-group">
-                                                <select class="form-select form-control"
-                                                    aria-label="Default select example">
-                                                    <option selected>All Category</option>
-                                                    <option value="1">Non-Fiction</option>
-                                                    <option value="2">Fiction</option>
-                                                    <option value="3">Science</option>
+                                                <select name="category" class="form-select form-control"
+                                                    aria-label="Category select">
+                                                    <option value="">All Category</option>
+                                                    @foreach($categories as $category)
+                                                        <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
@@ -68,18 +69,19 @@
                                     <div class="row">
                                         <div class="col-lg-12">
                                             <div class="form-group">
-                                                <input type="text" class="form-control"
+                                                <input type="text" name="search" class="form-control"
                                                     placeholder="Search by title, author, or description...">
+                                                <input type="hidden" name="availability_type" value="loan">
                                             </div>
                                         </div>
                                         <div class="col-lg-12">
                                             <div class="form-group">
-                                                <select class="form-select form-control"
-                                                    aria-label="Default select example">
-                                                    <option selected>All Category</option>
-                                                    <option value="1">Non-Fiction</option>
-                                                    <option value="2">Fiction</option>
-                                                    <option value="3">Science</option>
+                                                <select name="category" class="form-select form-control"
+                                                    aria-label="Category select">
+                                                    <option value="">All Category</option>
+                                                    @foreach($categories as $category)
+                                                        <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                                                    @endforeach
                                                 </select>
                                             </div>
                                         </div>
@@ -109,298 +111,66 @@
             </div>
 
             <div class="discover-slide owl-carousel owl-theme">
-                <div class="single-discover wow animate__animated animate__fadeInUp delay-0-4s">
-                    <a href="{{ route('frontend.browse-books') }}">
-                        <img src="{{ asset('frontend/assets/images/discover/discover-2.jpg') }}" alt="Non-Fiction Books">
-                        <h3>Non-Fiction</h3>
-                        <span>245 Books</span>
-                    </a>
-                </div>
-
-                <div class="single-discover wow animate__animated animate__fadeInUp delay-0-6s">
-                    <a href="{{ route('frontend.browse-books') }}">
-                        <img src="{{ asset('frontend/assets/images/discover/discover-3.jpg') }}" alt="Science Books">
-                        <h3>Science</h3>
-                        <span>105 Books</span>
-                    </a>
-                </div>
-
-                <div class="single-discover wow animate__animated animate__fadeInUp delay-0-8s">
-                    <a href="{{ route('frontend.browse-books') }}">
-                        <img src="{{ asset('frontend/assets/images/discover/discover-4.jpg') }}" alt="Mystery Books">
-                        <h3>Mystery</h3>
-                        <span>325 Books</span>
-                    </a>
-                </div>
-
-                <div class="single-discover wow animate__animated animate__fadeInUp delay-0-2s">
-                    <a href="{{ route('frontend.browse-books') }}">
-                        <img src="{{ asset('frontend/assets/images/discover/discover-5.jpg') }}" alt="Romance Books">
-                        <h3>Romance</h3>
-                        <span>230 Books</span>
-                    </a>
-                </div>
-
-                <div class="single-discover wow animate__animated animate__fadeInUp delay-0-4s">
-                    <a href="{{ route('frontend.browse-books') }}">
-                        <img src="{{ asset('frontend/assets/images/discover/discover-6.jpg') }}" alt="Biography Books">
-                        <h3>Biography</h3>
-                        <span>145 Books</span>
-                    </a>
-                </div>
+                @foreach($categories as $index => $category)
+                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-{{ ($index % 3 + 2) * 2 }}s">
+                        <a href="{{ route('frontend.browse-books') }}?category={{ $category->slug }}">
+                            @if($category->image)
+                                <img src="{{ $category->image_url }}" alt="{{ $category->name }} Books">
+                            @else
+                                <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $category->name }} Books">
+                            @endif
+                            <h3>{{ $category->name }}</h3>
+                            <span>{{ $category->books_count }} Books</span>
+                        </a>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
     <!-- End Discover Area -->
 
-    <!-- Start Properties Area -->
-    <div class="properties-area bg-color-f8fafb ptb-100">
+    <!-- Start Books Area -->
+    <div class="discover-area bg-color-f8fafb pt-100 pb-70">
         <div class="container">
-            <div class="properties-filter">
-                <div class="section-title left-title">
-                    <h2>Recent Books</h2>
-                </div>
-                <div class="shorting-menu">
-                    <button class="filter border-radius-4" data-filter="all">
-                        All Books
-                    </button>
-
-                    <button class="filter border-radius-4" data-filter=".for-sale">
-                        For Swap
-                    </button>
-
-                    <button class="filter border-radius-4" data-filter=".for-rent">
-                        For Loan
-                    </button>
-                </div>
+            <div class="section-title left-title">
+                <h2>Book Lists</h2>
             </div>
 
-            <div class="shorting">
-                <div class="row justify-content-center">
-                    <div class="col-xl-3 col-md-6 mix for-rent">
-                        <div class="single-properties-item style-three wow animate__animated animate__fadeInUp delay-0-2s">
-                            <div class="properties-img">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/assets/images/properties/properties-1.jpg') }}" alt="Atomic Habits Book Cover">
-                                </a>
-                                <span>Loan</span>
-                                <button class="wish">
-                                    <i class="ri-heart-3-line"></i>
-                                </button>
-                            </div>
-                            <div class="properties-content">
-                                <div class="border-style">
-                                    <div class="d-flex justify-content-between">
-                                        <a href="#">
-                                            <h3>Atomic Habits</h3>
-                                        </a>
-                                    </div>
-                                    <p>
-                                        <i class="ri-user-line"></i>
-                                        <strong>Author:</strong> James Clear
-                                    </p>
-                                    <ul class="feature-list">
-                                        <li>
-                                            <i class="ri-bookmark-line"></i>
-                                            Self-Help
-                                        </li>
-                                        <li>
-                                            <i class="ri-medal-line"></i>
-                                            Like New
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <ul class="user d-flex justify-content-between align-items-center">
-                                    <li>
-                                        <a href="#" class="agent-user">
-                                            <img src="{{ asset('frontend/assets/images/agents/agent-1.jpg') }}" alt="Book Owner">
-                                            <span>By Sarah Johnson</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mix for-sale">
-                        <div class="single-properties-item style-three wow animate__animated animate__fadeInUp delay-0-4s">
-                            <div class="properties-img">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/assets/images/properties/properties-2.jpg') }}" alt="The Alchemist Book Cover">
-                                </a>
-                                <span>Swap</span>
-                                <button class="wish">
-                                    <i class="ri-heart-3-line"></i>
-                                </button>
-                            </div>
-                            <div class="properties-content">
-                                <div class="border-style">
-                                    <div class="d-flex justify-content-between">
-                                        <a href="#">
-                                            <h3>The Alchemist</h3>
-                                        </a>
-                                    </div>
-                                    <p>
-                                        <i class="ri-user-line"></i>
-                                        <strong>Author:</strong> Paulo Coelho
-                                    </p>
-                                    <ul class="feature-list">
-                                        <li>
-                                            <i class="ri-bookmark-line"></i>
-                                            Fiction
-                                        </li>
-                                        <li>
-                                            <i class="ri-medal-line"></i>
-                                            Good
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <ul class="user d-flex justify-content-between align-items-center">
-                                    <li>
-                                        <a href="#" class="agent-user">
-                                            <img src="{{ asset('frontend/assets/images/agents/agent-2.jpg') }}" alt="Book Owner">
-                                            <span>By Michael Chen</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-half-line"></i>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mix for-rent">
-                        <div class="single-properties-item style-three wow animate__animated animate__fadeInUp delay-0-6s">
-                            <div class="properties-img">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/assets/images/properties/properties-3.jpg') }}" alt="Sapiens Book Cover">
-                                </a>
-                                <span>Loan</span>
-                                <button class="wish">
-                                    <i class="ri-heart-3-line"></i>
-                                </button>
-                            </div>
-                            <div class="properties-content">
-                                <div class="border-style">
-                                    <div class="d-flex justify-content-between">
-                                        <a href="#">
-                                            <h3>Sapiens</h3>
-                                        </a>
-                                    </div>
-                                    <p>
-                                        <i class="ri-user-line"></i>
-                                        <strong>Author:</strong> Yuval Noah Harari
-                                    </p>
-                                    <ul class="feature-list">
-                                        <li>
-                                            <i class="ri-bookmark-line"></i>
-                                            History
-                                        </li>
-                                        <li>
-                                            <i class="ri-medal-line"></i>
-                                            Excellent
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <ul class="user d-flex justify-content-between align-items-center">
-                                    <li>
-                                        <a href="#" class="agent-user">
-                                            <img src="{{ asset('frontend/assets/images/agents/agent-3.jpg') }}" alt="Book Owner">
-                                            <span>By Emma Rodriguez</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-xl-3 col-md-6 mix for-sale">
-                        <div class="single-properties-item style-three wow animate__animated animate__fadeInUp delay-0-8s">
-                            <div class="properties-img">
-                                <a href="#">
-                                    <img src="{{ asset('frontend/assets/images/properties/properties-4.jpg') }}" alt="1984 Book Cover">
-                                </a>
-                                <span>Swap</span>
-                                <button class="wish">
-                                    <i class="ri-heart-3-line"></i>
-                                </button>
-                            </div>
-                            <div class="properties-content">
-                                <div class="border-style">
-                                    <div class="d-flex justify-content-between">
-                                        <a href="#">
-                                            <h3>1984</h3>
-                                        </a>
-                                    </div>
-                                    <p>
-                                        <i class="ri-user-line"></i>
-                                        <strong>Author:</strong> George Orwell
-                                    </p>
-                                    <ul class="feature-list">
-                                        <li>
-                                            <i class="ri-bookmark-line"></i>
-                                            Dystopian Fiction
-                                        </li>
-                                        <li>
-                                            <i class="ri-medal-line"></i>
-                                            Very Good
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <ul class="user d-flex justify-content-between align-items-center">
-                                    <li>
-                                        <a href="#" class="agent-user">
-                                            <img src="{{ asset('frontend/assets/images/agents/agent-4.jpg') }}" alt="Book Owner">
-                                            <span>By David Wilson</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-fill"></i>
-                                        <i class="ri-star-half-line"></i>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-12 text-center">
-                        <a href="{{ route('frontend.browse-books') }}" class="default-btn btn-radius">
-                            View All Books
+            <div class="discover-slide owl-carousel owl-theme">
+                @forelse($allBooks as $index => $book)
+                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-{{ ($index % 3 + 2) * 2 }}s">
+                        <a href="#">
+                            @if($book->image)
+                                <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
+                            @else
+                                <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
+                            @endif
+                            <h3>{{ Str::limit($book->title, 25) }}</h3>
+                            <span>{{ ucfirst($book->availability_type) }} | {{ $book->category ? $book->category->name : 'Uncategorized' }}</span>
                         </a>
                     </div>
-                </div>
+                @empty
+                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-2s">
+                        <div class="text-center p-5">
+                            <h4>No books available</h4>
+                            <p>There are currently no books available for lending or swapping.</p>
+                        </div>
+                    </div>
+                @endforelse
             </div>
+
+            @if($allBooks->count() > 0)
+                <div class="text-center mt-5">
+                    <a href="{{ route('frontend.browse-books') }}" class="default-btn btn-radius">
+                        View All Books
+                    </a>
+                </div>
+            @endif
         </div>
     </div>
-    <!-- End Properties Area -->
+    <!-- End Books Area -->
 
-        <!-- Start Meet Our Agents Area -->
+        <!-- Start Meet Our Team Area -->
     <div class="meet-our-agents-area pt-100 pb-70">
         <div class="container">
             <div class="section-title left-title">
@@ -408,205 +178,160 @@
             </div>
 
             <div class="agents-slide-two owl-carousel owl-theme">
+                <!-- Team Member 1: Shahariar Rahman -->
                 <div class="single-agents wow animate__animated animate__fadeInUp delay-0-2s">
                     <div class="agents-img mb-0">
-                        <img src="{{ asset('frontend/assets/images/agents/agent-9.jpg') }}" alt="Image">
-                        <span>8 Listing</span>
-                        <p>Rello RealEstate Agency</p>
+                        <img src="{{ asset('frontend/assets/images/team/Screenshot 2025-08-01 110838.png') }}" alt="Shahariar Rahman">
                     </div>
-
                     <div class="agents-content style-two">
-                        <div class="d-flex justify-content-between align-items-center align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
                             <h3>
-                                <a href="#">Edward Mccoy</a>
+                                <a href="#">Shahariar Rahman</a>
                             </h3>
-
-                            <div class="team-social">
-                                <a href="#" class="control">
-                                    <i class="ri-share-fill"></i>
-                                </a>
-
-                                <ul>
-                                    <li>
-                                        <a href="https://www.facebook.com/" target="_blank">
-                                            <i class="ri-facebook-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.instagram.com/" target="_blank">
-                                            <i class="ri-instagram-line"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.linkedin.com/" target="_blank">
-                                            <i class="ri-linkedin-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://twitter.com/" target="_blank">
-                                            <i class="ri-twitter-fill"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
                         </div>
-
                         <ul class="info">
                             <li>
-                                <a href="/cdn-cgi/l/email-protection#3f5a5b485e4d5b7f4d5a535350115c5052">
+                                <a href="mailto:sahariarshifat2002@gmail.com">
                                     <i class="ri-mail-line"></i>
-                                    <span class="__cf_email__"
-                                        data-cfemail="315455465043557143545d5d5e1f525e5c">[email&#160;protected]</span>
+                                    <span>sahariarshifat2002@gmail.com</span>
                                 </a>
                             </li>
                         </ul>
-
                         <div class="view-call d-flex justify-content-between align-items-center">
-                            <a href="tel:+1-719-504-1984">
+                            <a href="tel:01744717205">
                                 <i class="ri-phone-fill"></i>
-                                +1 719-504-1984
+                                01744717205
                             </a>
-                            <a href="#" class="read-more">
-                                View Profile
-                                <i class="ri-arrow-right-line"></i>
-                            </a>
+                            <span class="read-more">
+                                Backend Developer
+                            </span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Team Member 2: Shantanu Kundu -->
                 <div class="single-agents wow animate__animated animate__fadeInUp delay-0-4s">
                     <div class="agents-img mb-0">
-                        <img src="{{ asset('frontend/assets/images/agents/agent-10.jpg') }}" alt="Image">
-                        <span>5 Listing</span>
-                        <p>Pelody RealEstate Agency</p>
+                        <img src="{{ asset('frontend/assets/images/team/Screenshot 2025-08-01 023122.png') }}" alt="Shantanu Kundu">
                     </div>
-
                     <div class="agents-content style-two">
-                        <div class="d-flex justify-content-between align-items-center align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
                             <h3>
-                                <a href="single-agents.html">Edward Mccoy</a>
+                                <a href="#">Shantanu Kundu</a>
                             </h3>
-
-                            <div class="team-social">
-                                <a href="#" class="control">
-                                    <i class="ri-share-fill"></i>
-                                </a>
-
-                                <ul>
-                                    <li>
-                                        <a href="https://www.facebook.com/" target="_blank">
-                                            <i class="ri-facebook-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.instagram.com/" target="_blank">
-                                            <i class="ri-instagram-line"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.linkedin.com/" target="_blank">
-                                            <i class="ri-linkedin-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://twitter.com/" target="_blank">
-                                            <i class="ri-twitter-fill"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
                         </div>
-
                         <ul class="info">
                             <li>
-                                <a href="/cdn-cgi/l/email-protection#b8dcdddad7cad9d0f8c8ddd4d7dcc196dbd7d5">
+                                <a href="mailto:kundu15-5897@diu.edu.bd">
                                     <i class="ri-mail-line"></i>
-                                    <span class="__cf_email__"
-                                        data-cfemail="3a5e5f5855485b527a4a5f56555e4314595557">[email&#160;protected]</span>
+                                    <span>kundu15-5897@diu.edu.bd</span>
                                 </a>
                             </li>
                         </ul>
-
                         <div class="view-call d-flex justify-content-between align-items-center">
-                            <a href="tel:+1-719-504-1984">
+                            <a href="tel:01797477220">
                                 <i class="ri-phone-fill"></i>
-                                +1 719-504-1984
+                                01797477220
                             </a>
-                            <a href="single-agents.html" class="read-more">
-                                View Profile
-                                <i class="ri-arrow-right-line"></i>
-                            </a>
+                            <span class="read-more">
+                                Backend Developer
+                            </span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Team Member 3: Zinnahtur Rahman -->
                 <div class="single-agents wow animate__animated animate__fadeInUp delay-0-6s">
                     <div class="agents-img mb-0">
-                        <img src="{{ asset('frontend/assets/images/agents/agent-11.jpg') }}" alt="Image">
-                        <span>3 Listing</span>
-                        <p>Ripeco RealEstate Agency</p>
+                        <img src="{{ asset('frontend/assets/images/team/Screenshot 2025-08-01 023348.png') }}" alt="Zinnahtur Rahman">
                     </div>
-
                     <div class="agents-content style-two">
-                        <div class="d-flex justify-content-between align-items-center align-items-center">
+                        <div class="d-flex justify-content-between align-items-center">
                             <h3>
-                                <a href="single-agents.html">Edward Mccoy</a>
+                                <a href="#">Zinnahtur Rahman</a>
                             </h3>
-
-                            <div class="team-social">
-                                <a href="#" class="control">
-                                    <i class="ri-share-fill"></i>
-                                </a>
-
-                                <ul>
-                                    <li>
-                                        <a href="https://www.facebook.com/" target="_blank">
-                                            <i class="ri-facebook-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.instagram.com/" target="_blank">
-                                            <i class="ri-instagram-line"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://www.linkedin.com/" target="_blank">
-                                            <i class="ri-linkedin-fill"></i>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="https://twitter.com/" target="_blank">
-                                            <i class="ri-twitter-fill"></i>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
                         </div>
-
                         <ul class="info">
                             <li>
-                                <a href="/cdn-cgi/l/email-protection#73191600001a1633011a0316101c5d101c1e">
+                                <a href="mailto:zitu15-6009@diu.edu.bd">
                                     <i class="ri-mail-line"></i>
-                                    <span class="__cf_email__"
-                                        data-cfemail="18727d6b6b717d586a71687d7b77367b7775">[email&#160;protected]</span>
+                                    <span>zitu15-6009@diu.edu.bd</span>
                                 </a>
                             </li>
                         </ul>
-
                         <div class="view-call d-flex justify-content-between align-items-center">
-                            <a href="tel:+1-719-504-1984">
+                            <a href="tel:01798436541">
                                 <i class="ri-phone-fill"></i>
-                                +1 719-504-1984
+                                01798436541
                             </a>
-                            <a href="single-agents.html" class="read-more">
-                                View Profile
-                                <i class="ri-arrow-right-line"></i>
-                            </a>
+                            <span class="read-more">
+                                Database Developer
+                            </span>
                         </div>
                     </div>
                 </div>
 
+                <!-- Team Member 4: Shohanur Rahman -->
+                <div class="single-agents wow animate__animated animate__fadeInUp delay-0-8s">
+                    <div class="agents-img mb-0">
+                        <img src="{{ asset('frontend/assets/images/team/Screenshot 2025-08-01 023512.png') }}" alt="Shohanur Rahman">
+                    </div>
+                    <div class="agents-content style-two">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3>
+                                <a href="#">Shohanur Rahman</a>
+                            </h3>
+                        </div>
+                        <ul class="info">
+                            <li>
+                                <a href="mailto:rahman15-6021@diu.edu.bd">
+                                    <i class="ri-mail-line"></i>
+                                    <span>rahman15-6021@diu.edu.bd</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="view-call d-flex justify-content-between align-items-center">
+                            <a href="tel:01798436541">
+                                <i class="ri-phone-fill"></i>
+                                01798436541
+                            </a>
+                            <span class="read-more">
+                                Frontend Developer
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Team Member 5: Taposi Rabeya -->
+                <div class="single-agents wow animate__animated animate__fadeInUp delay-1-0s">
+                    <div class="agents-img mb-0">
+                        <img src="{{ asset('frontend/assets/images/team/Screenshot 2025-08-01 023051.png') }}" alt="Taposi Rabeya">
+                    </div>
+                    <div class="agents-content style-two">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3>
+                                <a href="#">Taposi Rabeya</a>
+                            </h3>
+                        </div>
+                        <ul class="info">
+                            <li>
+                                <a href="mailto:taposi@gmail.com">
+                                    <i class="ri-mail-line"></i>
+                                    <span>taposi@gmail.com</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="view-call d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="ri-phone-fill"></i>
+                                01714990871
+                            </span>
+                            <span class="read-more">
+                                Frontend Developer
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

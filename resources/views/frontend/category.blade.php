@@ -33,88 +33,28 @@
             </div>
 
             <div class="row justify-content-center">
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-2s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-1.jpg') }}" alt="Fiction Books">
-                            <h3>Fiction</h3>
-                            <span>458 Books</span>
-                        </a>
+                @forelse($categories as $index => $category)
+                    <div class="col-lg-3 col-sm-6">
+                        <div class="single-discover wow animate__animated animate__fadeInUp delay-0-{{ ($index % 4 + 1) * 2 }}s">
+                            <a href="{{ route('frontend.browse-books') }}?category={{ $category->slug }}">
+                                @if($category->image)
+                                    <img src="{{ $category->image_url }}" alt="{{ $category->name }} Books">
+                                @else
+                                    <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $category->name }} Books">
+                                @endif
+                                <h3>{{ $category->name }}</h3>
+                                <span>{{ $category->books_count }} Books</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-4s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-2.jpg') }}"
-                                alt="Non-Fiction Books">
-                            <h3>Non-Fiction</h3>
-                            <span>245 Books</span>
-                        </a>
+                @empty
+                    <div class="col-12">
+                        <div class="text-center">
+                            <h4>No categories available at the moment.</h4>
+                            <p>Please check back later for more book categories.</p>
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-6s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-3.jpg') }}" alt="Science Books">
-                            <h3>Science</h3>
-                            <span>105 Books</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-8s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-4.jpg') }}" alt="Mystery Books">
-                            <h3>Mystery</h3>
-                            <span>325 Books</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-2s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-5.jpg') }}" alt="Romance Books">
-                            <h3>Romance</h3>
-                            <span>230 Books</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-4s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-6.jpg') }}" alt="Biography Books">
-                            <h3>Biography</h3>
-                            <span>145 Books</span>
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-4s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-6.jpg') }}" alt="Biography Books">
-                            <h3>Biography</h3>
-                            <span>145 Books</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-sm-6">
-                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-4s">
-                        <a href="{{ route('frontend.browse-books') }}">
-                            <img src="{{ asset('frontend/assets/images/discover/discover-6.jpg') }}" alt="Biography Books">
-                            <h3>Biography</h3>
-                            <span>145 Books</span>
-                        </a>
-                    </div>
-                </div>
-
-
-
+                @endforelse
             </div>
         </div>
     </div>

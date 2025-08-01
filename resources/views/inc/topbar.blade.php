@@ -26,7 +26,7 @@ $user = Auth::user();
     </form>
     <ul class="navbar-nav navbar-right">
 
-
+    @if($user->hasRole(['admin', 'super admin']))
     <li class="dropdown dropdown-list-toggle"><a href="{{ route('clear') }}" class="nav-link nav-link-lg beep"><i class="fas fa-broom"></i></a>
 
     </li>
@@ -34,6 +34,7 @@ $user = Auth::user();
 
     <li class="dropdown dropdown-list-toggle"><a href="{{ route('route') }}" class="nav-link nav-link-lg beep"><i class="fas fa-route"></i></a>
     </li>
+    @endif
 
 
 
