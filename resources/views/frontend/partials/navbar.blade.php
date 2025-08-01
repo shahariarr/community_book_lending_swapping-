@@ -50,11 +50,19 @@
 
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a href="{{ route('frontend.browse-books') }}" class="nav-link">Swap Books</a>
+                                    <a href="{{ route('frontend.browse-books') }}?availability_type=swap" class="nav-link">Swap Books</a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a href="{{ route('frontend.browse-books') }}" class="nav-link">Loan Books</a>
+                                    <a href="{{ route('frontend.browse-books') }}?availability_type=loan" class="nav-link">Loan Books</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('frontend.browse-books') }}?availability_type=both" class="nav-link">Both Books</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('frontend.browse-books') }}" class="nav-link">All Books</a>
                                 </li>
                             </ul>
                         </li>

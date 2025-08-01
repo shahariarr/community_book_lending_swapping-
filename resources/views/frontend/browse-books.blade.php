@@ -63,6 +63,7 @@
                                         <option value="">All Availability</option>
                                         <option value="loan" {{ request('availability_type') == 'loan' ? 'selected' : '' }}>For Loan</option>
                                         <option value="swap" {{ request('availability_type') == 'swap' ? 'selected' : '' }}>For Swap</option>
+                                        <option value="both" {{ request('availability_type') == 'both' ? 'selected' : '' }}>For Both</option>
                                     </select>
                                 </div>
 
@@ -120,7 +121,17 @@
                                             @else
                                                 <img src="{{ asset('frontend/assets/images/featured/featured-' . (($loop->index % 3) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
                                             @endif
-                                            <span>{{ ucfirst($book->availability_type) }}</span>
+                                            <span class="availability-badge {{ strtolower($book->availability_type) }}">
+                                                @if($book->availability_type == 'loan')
+                                                    For Loan
+                                                @elseif($book->availability_type == 'swap')
+                                                    For Swap
+                                                @elseif($book->availability_type == 'both')
+                                                    For Both
+                                                @else
+                                                    {{ ucfirst($book->availability_type) }}
+                                                @endif
+                                            </span>
                                             <ul class="d-flex justify-content-between">
                                                 <li>
                                                     @for($i = 1; $i <= 5; $i++)
@@ -150,6 +161,24 @@
                                                 <i class="ri-user-line"></i>
                                                 <strong>Author:</strong> {{ $book->author }}
                                             </p>
+
+                                            <!-- Enhanced availability display -->
+                                            <div class="availability-info mb-2">
+                                                <i class="ri-price-tag-3-line"></i>
+                                                <strong>Availability:</strong>
+                                                <span class="availability-text {{ strtolower($book->availability_type) }}">
+                                                    @if($book->availability_type == 'loan')
+                                                        Available for Loan
+                                                    @elseif($book->availability_type == 'swap')
+                                                        Available for Swap
+                                                    @elseif($book->availability_type == 'both')
+                                                        Available for Both Loan & Swap
+                                                    @else
+                                                        {{ ucfirst($book->availability_type) }}
+                                                    @endif
+                                                </span>
+                                            </div>
+
                                             <ul>
                                                 <li>
                                                     <i class="ri-bookmark-line"></i>

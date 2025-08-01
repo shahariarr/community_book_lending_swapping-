@@ -1,0 +1,133 @@
+/* Custom Image Height Fixes */
+
+/* Book Lists Section - Fixed height for book images */
+.discover-area .single-discover img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}
+
+/* Book Categories Section - Fixed height for category images */
+.discover-area .single-discover a img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}
+
+/* Team Members Section - Fixed height for team member images */
+.meet-our-agents-area .single-agents .agents-img img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: 8px;
+}
+
+/* Home Page Book Availability Styles */
+.book-image-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.availability-badge-home {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 2;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.availability-badge-home.loan {
+    background-color: #28a745;
+    color: white;
+}
+
+.availability-badge-home.swap {
+    background-color: #007bff;
+    color: white;
+}
+
+.book-details {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+.availability-text-home.loan {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.availability-text-home.swap {
+    color: #007bff;
+    font-weight: 600;
+}
+
+/* Browse Books Page Availability Styles */
+.availability-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.availability-badge.loan {
+    background-color: #28a745;
+    color: white;
+}
+
+.availability-badge.swap {
+    background-color: #007bff;
+    color: white;
+}
+
+.availability-info {
+    color: #2b3b3a;
+    font-size: 14px;
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 3px solid #006766;
+}
+
+.availability-text.loan {
+    color: #28a745;
+    font-weight: 600;
+}
+
+.availability-text.swap {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.availability-info i {
+    color: #006766;
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+/* Featured Books Section - Fixed height for book cover images */
+.single-featured-item .featured-img img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}

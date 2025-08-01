@@ -129,46 +129,161 @@
     </div>
     <!-- End Discover Area -->
 
-    <!-- Start Books Area -->
+    <!-- Start Books for Loan Area -->
     <div class="discover-area bg-color-f8fafb pt-100 pb-70">
         <div class="container">
             <div class="section-title left-title">
-                <h2>Book Lists</h2>
+                <h2>Books for Loan</h2>
+                <p>Discover books available for borrowing from our community</p>
             </div>
 
             <div class="discover-slide owl-carousel owl-theme">
-                @forelse($allBooks as $index => $book)
+                @forelse($allBooks->where('availability_type', 'loan') as $index => $book)
                     <div class="single-discover wow animate__animated animate__fadeInUp delay-0-{{ ($index % 3 + 2) * 2 }}s">
                         <a href="#">
-                            @if($book->image)
-                                <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
-                            @else
-                                <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
-                            @endif
+                            <div class="book-image-container" style="position: relative;">
+                                @if($book->image)
+                                    <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
+                                @else
+                                    <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
+                                @endif
+                                <span class="availability-badge-home loan">
+                                    For Loan
+                                </span>
+                            </div>
                             <h3>{{ Str::limit($book->title, 25) }}</h3>
-                            <span>{{ ucfirst($book->availability_type) }} | {{ $book->category ? $book->category->name : 'Uncategorized' }}</span>
+                            <span class="book-details">
+                                <strong class="availability-text-home loan">
+                                    Available for Loan
+                                </strong>
+                                | {{ $book->category ? $book->category->name : 'Uncategorized' }}
+                            </span>
                         </a>
                     </div>
                 @empty
                     <div class="single-discover wow animate__animated animate__fadeInUp delay-0-2s">
                         <div class="text-center p-5">
-                            <h4>No books available</h4>
-                            <p>There are currently no books available for lending or swapping.</p>
+                            <h4>No books available for loan</h4>
+                            <p>There are currently no books available for lending.</p>
                         </div>
                     </div>
                 @endforelse
             </div>
 
-            @if($allBooks->count() > 0)
+            @if($allBooks->where('availability_type', 'loan')->count() > 0)
                 <div class="text-center mt-5">
-                    <a href="{{ route('frontend.browse-books') }}" class="default-btn btn-radius">
-                        View All Books
+                    <a href="{{ route('frontend.browse-books') }}?availability_type=loan" class="default-btn btn-radius">
+                        View All Loan Books
                     </a>
                 </div>
             @endif
         </div>
     </div>
-    <!-- End Books Area -->
+    <!-- End Books for Loan Area -->
+
+    <!-- Start Books for Swap Area -->
+    <div class="discover-area bg-color-f2f7fd pt-100 pb-70">
+        <div class="container">
+            <div class="section-title left-title">
+                <h2>Books for Swap</h2>
+                <p>Find books available for exchange with other community members</p>
+            </div>
+
+            <div class="discover-slide owl-carousel owl-theme">
+                @forelse($allBooks->where('availability_type', 'swap') as $index => $book)
+                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-{{ ($index % 3 + 2) * 2 }}s">
+                        <a href="#">
+                            <div class="book-image-container" style="position: relative;">
+                                @if($book->image)
+                                    <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
+                                @else
+                                    <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
+                                @endif
+                                <span class="availability-badge-home swap">
+                                    For Swap
+                                </span>
+                            </div>
+                            <h3>{{ Str::limit($book->title, 25) }}</h3>
+                            <span class="book-details">
+                                <strong class="availability-text-home swap">
+                                    Available for Swap
+                                </strong>
+                                | {{ $book->category ? $book->category->name : 'Uncategorized' }}
+                            </span>
+                        </a>
+                    </div>
+                @empty
+                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-2s">
+                        <div class="text-center p-5">
+                            <h4>No books available for swap</h4>
+                            <p>There are currently no books available for swapping.</p>
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+
+            @if($allBooks->where('availability_type', 'swap')->count() > 0)
+                <div class="text-center mt-5">
+                    <a href="{{ route('frontend.browse-books') }}?availability_type=swap" class="default-btn btn-radius">
+                        View All Swap Books
+                    </a>
+                </div>
+            @endif
+        </div>
+    </div>
+    <!-- End Books for Swap Area -->
+
+    <!-- Start Books for Both Area -->
+    <div class="discover-area bg-color-f8fafb pt-100 pb-70">
+        <div class="container">
+            <div class="section-title left-title">
+                <h2>Books for Both</h2>
+                <p>Books available for both loan and swap options</p>
+            </div>
+
+            <div class="discover-slide owl-carousel owl-theme">
+                @forelse($allBooks->where('availability_type', 'both') as $index => $book)
+                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-{{ ($index % 3 + 2) * 2 }}s">
+                        <a href="#">
+                            <div class="book-image-container" style="position: relative;">
+                                @if($book->image)
+                                    <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
+                                @else
+                                    <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
+                                @endif
+                                <span class="availability-badge-home both" style="background-color: #6f42c1 !important; color: white !important;">
+                                    For Both
+                                </span>
+                            </div>
+                            <h3>{{ Str::limit($book->title, 25) }}</h3>
+                            <span class="book-details">
+                                <strong class="availability-text-home both" style="color: #6f42c1 !important; font-weight: 600 !important;">
+                                    Available for Both Loan & Swap
+                                </strong>
+                                | {{ $book->category ? $book->category->name : 'Uncategorized' }}
+                            </span>
+                        </a>
+                    </div>
+                @empty
+                    <div class="single-discover wow animate__animated animate__fadeInUp delay-0-2s">
+                        <div class="text-center p-5">
+                            <h4>No books available for both</h4>
+                            <p>There are currently no books available for both loan and swap.</p>
+                        </div>
+                    </div>
+                @endforelse
+            </div>
+
+            @if($allBooks->where('availability_type', 'both')->count() > 0)
+                <div class="text-center mt-5">
+                    <a href="{{ route('frontend.browse-books') }}?availability_type=both" class="default-btn btn-radius">
+                        View All Both Books
+                    </a>
+                </div>
+            @endif
+        </div>
+    </div>
+    <!-- End Books for Both Area -->
 
         <!-- Start Meet Our Team Area -->
     <div class="meet-our-agents-area pt-100 pb-70">
