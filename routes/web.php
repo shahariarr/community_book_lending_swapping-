@@ -17,8 +17,22 @@ use App\Http\Controllers\FeedbackController;
 |
 */
 
+// Frontend Routes
+Route::get('/', [App\Http\Controllers\Frontend\FrontendController::class, 'home'])->name('frontend.home');
 
-Route::get('/', function () {
+Route::get('/browse-books', [App\Http\Controllers\Frontend\FrontendController::class, 'browseBooks'])->name('frontend.browse-books');
+
+Route::get('/categories', [App\Http\Controllers\Frontend\FrontendController::class, 'category'])->name('frontend.category');
+
+Route::get('/about-us', [App\Http\Controllers\Frontend\FrontendController::class, 'about'])->name('frontend.about');
+
+Route::get('/contact-us', [App\Http\Controllers\Frontend\FrontendController::class, 'contact'])->name('frontend.contact');
+
+Route::get('/blog', [App\Http\Controllers\Frontend\FrontendController::class, 'blog'])->name('frontend.blog');
+
+
+
+Route::get('/login', function () {
     return view('auth.login');
 });
 
