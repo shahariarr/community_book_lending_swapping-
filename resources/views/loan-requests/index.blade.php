@@ -21,6 +21,11 @@
                     <h4><i class="fas fa-hand-holding"></i> My Loan Requests</h4>
                     <div class="card-header-action">
                         <span class="badge badge-primary">{{ $myRequests->total() }} Total</span>
+                        <button type="button" class="btn btn-outline-danger btn-sm ml-2"
+                                onclick="confirmClearHistory()"
+                                title="Clear completed/cancelled/rejected requests">
+                            <i class="fas fa-broom"></i> Clear History
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -99,11 +104,28 @@
                                                    class="btn btn-outline-primary" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+                                                @if($request->status === 'accepted' && $request->invoice)
+                                                    <a href="{{ route('invoices.show', $request->invoice) }}"
+                                                       class="btn btn-outline-info" title="View Invoice">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                    </a>
+                                                    <a href="{{ route('invoices.download', $request->invoice) }}"
+                                                       class="btn btn-outline-success" title="Download Invoice">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                @endif
                                                 @if($request->status === 'pending')
                                                     <button type="button" class="btn btn-outline-danger"
                                                             onclick="confirmCancel('{{ route('loan-requests.cancel', $request->id) }}')"
                                                             title="Cancel Request">
                                                         <i class="fas fa-times"></i>
+                                                    </button>
+                                                @endif
+                                                @if(in_array($request->status, ['completed', 'cancelled', 'rejected']))
+                                                    <button type="button" class="btn btn-outline-secondary"
+                                                            onclick="confirmDelete({{ $request->id }})"
+                                                            title="Delete Request">
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 @endif
                                             </div>
@@ -228,6 +250,16 @@
                                                    class="btn btn-outline-primary" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+                                                @if($request->status === 'accepted' && $request->invoice)
+                                                    <a href="{{ route('invoices.show', $request->invoice) }}"
+                                                       class="btn btn-outline-info" title="View Invoice">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                    </a>
+                                                    <a href="{{ route('invoices.download', $request->invoice) }}"
+                                                       class="btn btn-outline-success" title="Download Invoice">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                @endif
                                                 @if($request->status === 'pending')
                                                     <button type="button" class="btn btn-outline-success"
                                                             onclick="confirmApprove('{{ route('loan-requests.approve', $request->id) }}')"
@@ -321,10 +353,19 @@
     @csrf
 </form>
 
+<form id="deleteForm" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<form id="clearHistoryForm" method="POST" action="{{ route('loan-requests.clear-history') }}" style="display: none;">
+    @csrf
+</form>
+
 @push('scripts')
 <script>
 function confirmApprove(actionUrl) {
-    if (confirm('Are you sure you want to approve this loan request?')) {
+    if (confirm('Are you sure you want to approve this loan request? This will generate an invoice.')) {
         document.getElementById('approveForm').action = actionUrl;
         document.getElementById('approveForm').submit();
     }
@@ -343,6 +384,30 @@ function confirmReturn(actionUrl) {
         document.getElementById('returnForm').submit();
     }
 }
+
+function confirmDelete(requestId) {
+    if (confirm('Are you sure you want to delete this loan request? This action cannot be undone.')) {
+        document.getElementById('deleteForm').action = '{{ url("/") }}/loan-requests/' + requestId;
+        document.getElementById('deleteForm').submit();
+    }
+}
+
+function confirmClearHistory() {
+    if (confirm('Are you sure you want to clear all completed, cancelled, and rejected loan requests? This action cannot be undone.')) {
+        document.getElementById('clearHistoryForm').submit();
+    }
+}
+
+// Show invoice notification if invoice was generated
+@if(session('invoice_generated') && session('invoice_id'))
+    $(document).ready(function() {
+        setTimeout(function() {
+            if (confirm('Invoice has been generated successfully! Would you like to view it now?')) {
+                window.open('{{ route("invoices.show", session("invoice_id")) }}', '_blank');
+            }
+        }, 1000);
+    });
+@endif
 </script>
 @endpush
 

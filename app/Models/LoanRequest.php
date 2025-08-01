@@ -23,6 +23,7 @@ class LoanRequest extends Model
         'lender_response',
         'responded_at',
         'is_overdue',
+        'duration_days',
     ];
 
     protected $casts = [
@@ -49,6 +50,11 @@ class LoanRequest extends Model
     public function lender()
     {
         return $this->belongsTo(User::class, 'lender_id');
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
     }
 
     // Scopes

@@ -200,6 +200,7 @@
     <div class="main-wrapper main-wrapper-1">
         <div class="navbar-bg"></div>
         @include('inc.topbar')
+        @include('components.navigation-help')
         @include('inc.sidebar')
         <!-- Main Content -->
         <div class="main-content">
@@ -283,5 +284,104 @@
     </script>
     <!--End of Tawk.to Script--> --}}
   @stack('scripts')
+
+  <!-- Floating Back to Website Button -->
+  <div class="floating-website-btn">
+    <a href="{{ route('frontend.home') }}" class="btn btn-primary btn-floating" title="Back to Website" target="_blank">
+      <i class="fas fa-globe btn-icon"></i>
+      <span class="btn-text">Website</span>
+    </a>
+  </div>
+
+  <style>
+    .floating-website-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+
+    .btn-floating {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: all 0.3s ease;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(45deg, #662D8C, #ED1E79) !important;
+      border: none;
+      color: white !important;
+      text-decoration: none;
+    }
+
+    .btn-floating:hover {
+      width: auto;
+      padding: 0 20px;
+      border-radius: 30px;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      color: white !important;
+      justify-content: center;
+    }
+
+    .btn-floating .btn-text {
+      opacity: 0;
+      margin-left: 0;
+      transition: opacity 0.3s ease;
+      white-space: nowrap;
+      font-weight: 600;
+      position: absolute;
+    }
+
+    .btn-floating:hover .btn-text {
+      opacity: 1;
+      position: static;
+    }
+
+    .btn-floating .btn-icon {
+      font-size: 20px;
+      transition: opacity 0.3s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-floating:hover .btn-icon {
+      opacity: 0;
+    }
+
+    @media (max-width: 768px) {
+      .floating-website-btn {
+        bottom: 15px;
+        right: 15px;
+      }
+
+      .btn-floating {
+        width: 50px;
+        height: 50px;
+      }
+
+      .btn-floating .btn-icon {
+        font-size: 18px;
+      }
+
+      .btn-floating:hover {
+        width: 50px;
+        padding: 0;
+        border-radius: 50%;
+      }
+
+      .btn-floating:hover .btn-text {
+        opacity: 0;
+      }
+
+      .btn-floating:hover .btn-icon {
+        opacity: 1;
+      }
+    }
+  </style>
+
 </body>
 </html>

@@ -260,6 +260,32 @@
                 </div>
             @endif
 
+            <!-- Invoice Section -->
+            @if($loanRequest->status === 'accepted' && $loanRequest->invoice)
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-file-invoice"></i> Invoice</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-3">
+                            <strong>Invoice #:</strong> {{ $loanRequest->invoice->invoice_number }}<br>
+                            <small class="text-muted">Generated: {{ $loanRequest->invoice->generated_at->format('M d, Y g:i A') }}</small>
+                        </p>
+                        <div class="btn-group-vertical w-100">
+                            <a href="{{ route('invoices.show', $loanRequest->invoice) }}" class="btn btn-primary mb-2">
+                                <i class="fas fa-eye"></i> View Invoice
+                            </a>
+                            <a href="{{ route('invoices.download', $loanRequest->invoice) }}" class="btn btn-success mb-2">
+                                <i class="fas fa-download"></i> Download PDF
+                            </a>
+                            <a href="{{ route('invoices.print', $loanRequest->invoice) }}" class="btn btn-outline-primary" target="_blank">
+                                <i class="fas fa-print"></i> Print Invoice
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <!-- Navigation -->
             <div class="card">
                 <div class="card-body">

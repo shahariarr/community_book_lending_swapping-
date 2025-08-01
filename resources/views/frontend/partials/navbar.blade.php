@@ -84,6 +84,14 @@
                     <div class="others-options style">
                         <ul>
                             @auth
+                                <!-- Quick Dashboard Access Button -->
+                                <li class="me-3">
+                                    <a href="{{ route('dashboard') }}" class="btn btn-sm btn-outline-primary d-none d-lg-inline-block" title="Go to Dashboard">
+                                        <i class="ri-dashboard-line"></i>
+                                        <span class="ms-1">Dashboard</span>
+                                    </a>
+                                </li>
+
                                 <li class="dropdown">
                                     <a href="#" class="login dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                         @if(auth()->user()->profile_image)
@@ -94,14 +102,14 @@
                                         <span>{{ auth()->user()->name }}</span>
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="{{ route('dashboard') }}" class="dropdown-item">Dashboard</a></li>
-                                        <li><a href="{{ route('books.my-books') }}" class="dropdown-item">My Books</a></li>
-                                        <li><a href="{{ route('users.profile') }}" class="dropdown-item">Profile</a></li>
+                                        <li><a href="{{ route('dashboard') }}" class="dropdown-item"><i class="ri-dashboard-line me-2"></i>Dashboard</a></li>
+                                        <li><a href="{{ route('books.my-books') }}" class="dropdown-item"><i class="ri-book-line me-2"></i>My Books</a></li>
+                                        <li><a href="{{ route('users.profile') }}" class="dropdown-item"><i class="ri-user-settings-line me-2"></i>Profile</a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <a href="{{ route('logout') }}" class="dropdown-item"
                                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                                <i class="ri-logout-circle-line"></i> Logout
+                                                <i class="ri-logout-circle-line me-2"></i> Logout
                                             </a>
                                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                                 @csrf

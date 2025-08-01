@@ -117,7 +117,7 @@
                                                         <i class="fas fa-edit"></i>
                                                     </a>
                                                 @endif
-                                                @if($book->status !== 'loaned' && !$book->loanRequests()->whereIn('status', ['pending', 'approved'])->exists())
+                                                @if($book->status !== 'loaned' && !$book->loanRequests()->whereIn('status', ['pending', 'accepted'])->exists())
                                                     <button type="button" class="btn btn-outline-danger"
                                                             onclick="confirmDelete({{ $book->id }}, '{{ $book->title }}')"
                                                             title="Delete">

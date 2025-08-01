@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\LoanRequest;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -24,13 +25,13 @@ class LoanRequestController extends Controller
         $user = Auth::user();
 
         // Requests I made to borrow books
-        $myRequests = LoanRequest::with(['book.user', 'book.category'])
+        $myRequests = LoanRequest::with(['book.user', 'book.category', 'invoice'])
             ->where('borrower_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10, ['*'], 'my_requests_page');
 
         // Requests from others to borrow my books
-        $requestsForMyBooks = LoanRequest::with(['borrower', 'book.category'])
+        $requestsForMyBooks = LoanRequest::with(['borrower', 'book.category', 'invoice'])
             ->whereHas('book', function($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
@@ -96,6 +97,7 @@ class LoanRequestController extends Controller
                 'book_id' => $book->id,
                 'message' => $request->message,
                 'status' => 'pending',
+                'duration_days' => $request->duration_days,
                 'requested_start_date' => $startDate,
                 'requested_end_date' => $endDate,
             ]);
@@ -146,7 +148,14 @@ class LoanRequestController extends Controller
         // Update book status
         $loanRequest->book->update(['status' => 'loaned']);
 
-        return back()->with('success', 'Loan request approved! The book has been marked as loaned.');
+        // Generate invoice
+        $invoice = InvoiceController::generateInvoice($loanRequest);
+
+        return back()->with([
+            'success' => 'Loan request approved! The book has been marked as loaned.',
+            'invoice_generated' => true,
+            'invoice_id' => $invoice->id
+        ]);
     }
 
     public function reject(Request $request, LoanRequest $loanRequest)
@@ -192,6 +201,11 @@ class LoanRequestController extends Controller
         // Update book status back to available
         $loanRequest->book->update(['status' => 'available']);
 
+        // Update invoice status if exists
+        if ($loanRequest->invoice) {
+            $loanRequest->invoice->update(['status' => 'completed']);
+        }
+
         return back()->with('success', 'Book marked as returned and is now available again.');
     }
 
@@ -220,8 +234,57 @@ class LoanRequestController extends Controller
             abort(403);
         }
 
-        $loanRequest->load(['borrower', 'lender', 'book.category']);
+        $loanRequest->load(['borrower', 'lender', 'book.category', 'invoice']);
 
         return view('loan-requests.show', compact('loanRequest'));
+    }
+
+    public function destroy(LoanRequest $loanRequest)
+    {
+        // Only the borrower can delete their own requests
+        if ($loanRequest->borrower_id !== Auth::id()) {
+            abort(403, 'You can only delete your own loan requests.');
+        }
+
+        // Only allow deletion of completed, cancelled, or rejected requests
+        if (!in_array($loanRequest->status, ['completed', 'cancelled', 'rejected'])) {
+            return back()->with('error', 'You can only delete completed, cancelled, or rejected loan requests.');
+        }
+
+        // Delete associated invoice if exists
+        if ($loanRequest->invoice) {
+            $loanRequest->invoice->delete();
+        }
+
+        $loanRequest->delete();
+
+        return back()->with('success', 'Loan request deleted successfully.');
+    }
+
+    public function clearHistory()
+    {
+        // Delete all completed, cancelled, or rejected requests for the current user
+        $deletedCount = LoanRequest::where('borrower_id', Auth::id())
+            ->whereIn('status', ['completed', 'cancelled', 'rejected'])
+            ->count();
+
+        if ($deletedCount > 0) {
+            // Delete associated invoices first
+            $requestsToDelete = LoanRequest::where('borrower_id', Auth::id())
+                ->whereIn('status', ['completed', 'cancelled', 'rejected'])
+                ->with('invoice')
+                ->get();
+
+            foreach ($requestsToDelete as $request) {
+                if ($request->invoice) {
+                    $request->invoice->delete();
+                }
+                $request->delete();
+            }
+
+            return back()->with('success', "Successfully cleared {$deletedCount} loan requests from your history.");
+        } else {
+            return back()->with('info', 'No completed, cancelled, or rejected loan requests found to clear.');
+        }
     }
 }

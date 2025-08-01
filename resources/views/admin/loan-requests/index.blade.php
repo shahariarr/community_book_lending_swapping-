@@ -206,7 +206,7 @@
                             <h4>Approved</h4>
                         </div>
                         <div class="card-body">
-                            {{ $loanRequests->where('status', 'approved')->count() }}
+                            {{ $loanRequests->where('status', 'accepted')->count() }}
                         </div>
                     </div>
                 </div>

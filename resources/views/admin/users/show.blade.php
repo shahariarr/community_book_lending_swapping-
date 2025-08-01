@@ -234,7 +234,7 @@
                                                     </small>
                                                 </td>
                                                 <td>
-                                                    <span class="badge badge-{{ $loanRequest->status === 'approved' ? 'success' : ($loanRequest->status === 'pending' ? 'warning' : 'danger') }}">
+                                                    <span class="badge badge-{{ $loanRequest->status === 'accepted' ? 'success' : ($loanRequest->status === 'pending' ? 'warning' : 'danger') }}">
                                                         {{ ucfirst($loanRequest->status) }}
                                                     </span>
                                                 </td>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\SwapRequest;
+use App\Http\Controllers\InvoiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -23,13 +24,13 @@ class SwapRequestController extends Controller
         $user = Auth::user();
 
         // Requests I made to swap books
-        $myRequests = SwapRequest::with(['requestedBook.user', 'offeredBook.user', 'requestedBook.category', 'offeredBook.category'])
+        $myRequests = SwapRequest::with(['requestedBook.user', 'offeredBook.user', 'requestedBook.category', 'offeredBook.category', 'invoice'])
             ->where('requester_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate(10, ['*'], 'my_requests_page');
 
         // Requests from others to swap with my books
-        $requestsForMyBooks = SwapRequest::with(['requester', 'requestedBook.category', 'offeredBook.category'])
+        $requestsForMyBooks = SwapRequest::with(['requester', 'requestedBook.category', 'offeredBook.category', 'invoice'])
             ->whereHas('requestedBook', function($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
@@ -73,6 +74,7 @@ class SwapRequestController extends Controller
         $request->validate([
             'requested_book_id' => 'required|exists:books,id',
             'offered_book_id' => 'required|exists:books,id',
+            'swap_duration_days' => 'required|integer|min:7|max:90',
             'message' => 'nullable|string|max:500'
         ]);
 
@@ -121,6 +123,8 @@ class SwapRequestController extends Controller
             'requested_book_id' => $requestedBook->id,
             'offered_book_id' => $offeredBook->id,
             'message' => $request->message,
+            'duration_days' => $request->swap_duration_days,
+            'duration_type' => 'day',
             'status' => 'pending',
         ]);
 
@@ -145,12 +149,18 @@ class SwapRequestController extends Controller
             return back()->with('error', 'One or both books are no longer available.');
         }
 
-        DB::transaction(function() use ($swapRequest) {
+        // Set swap dates
+        $startDate = now()->toDateString();
+        $endDate = now()->addDays($swapRequest->swap_duration_days)->toDateString();
+
+        DB::transaction(function() use ($swapRequest, $startDate, $endDate) {
             // Update swap request
             $swapRequest->update([
                 'status' => 'accepted',
                 'responded_at' => now(),
-                'completed_at' => now(),
+                'swap_start_date' => $startDate,
+                'swap_end_date' => $endDate,
+                'swap_status' => 'active',
             ]);
 
             // Update book statuses
@@ -163,9 +173,16 @@ class SwapRequestController extends Controller
 
             $swapRequest->requestedBook->update(['user_id' => $offeredBookUserId, 'status' => 'available']);
             $swapRequest->offeredBook->update(['user_id' => $requestedBookUserId, 'status' => 'available']);
+
+            // Generate invoice
+            $invoice = InvoiceController::generateSwapInvoice($swapRequest);
         });
 
-        return back()->with('success', 'Swap request approved! Books have been exchanged.');
+        return back()->with([
+            'success' => 'Swap request approved! Books have been exchanged and invoice generated.',
+            'invoice_generated' => true,
+            'swap_approved' => true
+        ]);
     }
 
     public function reject(Request $request, SwapRequest $swapRequest)
@@ -211,6 +228,48 @@ class SwapRequestController extends Controller
         return back()->with('success', 'Swap request cancelled.');
     }
 
+    public function returnBooks(SwapRequest $swapRequest)
+    {
+        // Both parties can initiate return
+        if (!in_array(Auth::id(), [$swapRequest->requester_id, $swapRequest->owner_id])) {
+            abort(403);
+        }
+
+        if ($swapRequest->status !== 'accepted' || $swapRequest->swap_status !== 'active') {
+            return back()->with('error', 'This swap is not active.');
+        }
+
+        DB::transaction(function() use ($swapRequest) {
+            // Update swap request
+            $swapRequest->update([
+                'status' => 'completed',
+                'swap_status' => 'returned',
+                'actual_return_date' => now(),
+                'completed_at' => now(),
+            ]);
+
+            // Return books to original owners
+            $originalRequestedBookOwner = $swapRequest->owner_id;
+            $originalOfferedBookOwner = $swapRequest->requester_id;
+
+            $swapRequest->requestedBook->update([
+                'user_id' => $originalRequestedBookOwner,
+                'status' => 'available'
+            ]);
+            $swapRequest->offeredBook->update([
+                'user_id' => $originalOfferedBookOwner,
+                'status' => 'available'
+            ]);
+
+            // Update invoice status if exists
+            if ($swapRequest->invoice) {
+                $swapRequest->invoice->update(['status' => 'completed']);
+            }
+        });
+
+        return back()->with('success', 'Books have been successfully returned to their original owners.');
+    }
+
     public function show(SwapRequest $swapRequest)
     {
         // Only involved parties can view
@@ -218,8 +277,57 @@ class SwapRequestController extends Controller
             abort(403);
         }
 
-        $swapRequest->load(['requester', 'owner', 'requestedBook.category', 'offeredBook.category']);
+        $swapRequest->load(['requester', 'owner', 'requestedBook.category', 'offeredBook.category', 'invoice']);
 
         return view('swap-requests.show', compact('swapRequest'));
+    }
+
+    public function destroy(SwapRequest $swapRequest)
+    {
+        // Only the requester can delete their own swap requests
+        if ($swapRequest->requester_id !== Auth::id()) {
+            abort(403, 'You can only delete your own swap requests.');
+        }
+
+        // Only allow deletion of completed, cancelled, or rejected requests
+        if (!in_array($swapRequest->status, ['completed', 'cancelled', 'rejected'])) {
+            return back()->with('error', 'You can only delete completed, cancelled, or rejected swap requests.');
+        }
+
+        // Delete associated invoice if exists
+        if ($swapRequest->invoice) {
+            $swapRequest->invoice->delete();
+        }
+
+        $swapRequest->delete();
+
+        return back()->with('success', 'Swap request deleted successfully.');
+    }
+
+    public function clearHistory()
+    {
+        // Delete all completed, cancelled, or rejected requests for the current user
+        $deletedCount = SwapRequest::where('requester_id', Auth::id())
+            ->whereIn('status', ['completed', 'cancelled', 'rejected'])
+            ->count();
+
+        if ($deletedCount > 0) {
+            // Delete associated invoices first
+            $requestsToDelete = SwapRequest::where('requester_id', Auth::id())
+                ->whereIn('status', ['completed', 'cancelled', 'rejected'])
+                ->with('invoice')
+                ->get();
+
+            foreach ($requestsToDelete as $request) {
+                if ($request->invoice) {
+                    $request->invoice->delete();
+                }
+                $request->delete();
+            }
+
+            return back()->with('success', "Successfully cleared {$deletedCount} swap requests from your history.");
+        } else {
+            return back()->with('info', 'No completed, cancelled, or rejected swap requests found to clear.');
+        }
     }
 }

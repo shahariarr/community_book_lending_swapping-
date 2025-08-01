@@ -31,7 +31,7 @@ class AdminController extends Controller
             'total_books' => Book::count(),
             'pending_books' => Book::where('is_approved', false)->count(),
             'approved_books' => Book::where('is_approved', true)->count(),
-            'active_loans' => LoanRequest::where('status', 'approved')->count(),
+            'active_loans' => LoanRequest::where('status', 'accepted')->count(),
             'pending_loan_requests' => LoanRequest::where('status', 'pending')->count(),
             'active_swaps' => SwapRequest::where('status', 'approved')->count(),
             'pending_swap_requests' => SwapRequest::where('status', 'pending')->count(),
@@ -203,8 +203,8 @@ class AdminController extends Controller
             'total_books' => $user->books()->count(),
             'approved_books' => $user->books()->where('is_approved', true)->count(),
             'pending_books' => $user->books()->where('is_approved', false)->count(),
-            'active_loans' => $user->loanRequestsAsBorrower()->where('status', 'approved')->count(),
-            'completed_loans' => $user->loanRequestsAsBorrower()->where('status', 'completed')->count(),
+            'active_loans' => $user->loanRequestsAsBorrower()->where('status', 'accepted')->count(),
+            'completed_loans' => $user->loanRequestsAsBorrower()->where('status', 'returned')->count(),
             'active_swaps' => $user->swapRequestsAsRequester()->where('status', 'approved')->count(),
         ];
 

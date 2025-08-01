@@ -408,7 +408,7 @@
                         <div class="view-call d-flex justify-content-between align-items-center">
                             <a href="tel:01798436541">
                                 <i class="ri-phone-fill"></i>
-                                01798436541
+                                01533667510
                             </a>
                             <span class="read-more">
                                 Frontend Developer

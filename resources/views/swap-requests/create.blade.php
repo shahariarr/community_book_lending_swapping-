@@ -91,6 +91,24 @@
                             </div>
                         </div>
 
+                        <!-- Swap Duration -->
+                        <div class="form-group">
+                            <label for="swap_duration_days">Swap Duration <span class="text-danger">*</span></label>
+                            <select class="form-control @error('swap_duration_days') is-invalid @enderror"
+                                    id="swap_duration_days" name="swap_duration_days" required>
+                                <option value="">How long would you like to swap?</option>
+                                <option value="7" {{ old('swap_duration_days') == '7' ? 'selected' : '' }}>1 Week</option>
+                                <option value="14" {{ old('swap_duration_days') == '14' ? 'selected' : '' }}>2 Weeks</option>
+                                <option value="30" {{ old('swap_duration_days') == '30' ? 'selected' : '' }}>1 Month</option>
+                                <option value="60" {{ old('swap_duration_days') == '60' ? 'selected' : '' }}>2 Months</option>
+                                <option value="90" {{ old('swap_duration_days') == '90' ? 'selected' : '' }}>3 Months</option>
+                            </select>
+                            <small class="form-text text-muted">Both parties will exchange books for this duration, then return them.</small>
+                            @error('swap_duration_days')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Message -->
                         <div class="form-group">
                             <label for="message">Message to Owner (Optional)</label>

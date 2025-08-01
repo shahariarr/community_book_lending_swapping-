@@ -26,6 +26,14 @@ $user = Auth::user();
     </form>
     <ul class="navbar-nav navbar-right">
 
+    <!-- Frontend Website Link -->
+    <li class="dropdown dropdown-list-toggle">
+        <a href="{{ route('frontend.home') }}" class="nav-link nav-link-lg" title="Go to Frontend Website" target="_blank">
+            <i class="fas fa-external-link-alt"></i>
+            <span class="d-none d-md-inline ml-1">Frontend</span>
+        </a>
+    </li>
+
     @if($user->hasRole(['admin', 'super admin']))
     <li class="dropdown dropdown-list-toggle"><a href="{{ route('clear') }}" class="nav-link nav-link-lg beep"><i class="fas fa-broom"></i></a>
 

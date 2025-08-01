@@ -15,15 +15,26 @@ class SwapRequest extends Model
         'requester_id',
         'owner_id',
         'message',
+        'swap_duration_days',
         'status',
         'owner_response',
         'responded_at',
         'completed_at',
+        'swap_start_date',
+        'swap_end_date',
+        'actual_return_date',
+        'swap_status',
+        'rejection_reason',
+        'cancelled_at',
     ];
 
     protected $casts = [
         'responded_at' => 'datetime',
         'completed_at' => 'datetime',
+        'swap_start_date' => 'date',
+        'swap_end_date' => 'date',
+        'actual_return_date' => 'date',
+        'cancelled_at' => 'datetime',
     ];
 
     // Relationships
@@ -45,6 +56,11 @@ class SwapRequest extends Model
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, 'swap_request_id');
     }
 
     // Scopes

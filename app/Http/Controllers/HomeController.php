@@ -93,9 +93,9 @@ class HomeController extends Controller
             // Get request status distribution
             $loanRequestStats = [
                 'pending_loan_requests' => LoanRequest::where('status', 'pending')->count(),
-                'approved_loan_requests' => LoanRequest::where('status', 'approved')->count(),
+                'approved_loan_requests' => LoanRequest::where('status', 'accepted')->count(),
                 'rejected_loan_requests' => LoanRequest::where('status', 'rejected')->count(),
-                'completed_loan_requests' => LoanRequest::where('status', 'completed')->count(),
+                'completed_loan_requests' => LoanRequest::where('status', 'returned')->count(),
             ];
 
             $swapRequestStats = [

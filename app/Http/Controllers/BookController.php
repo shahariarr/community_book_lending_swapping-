@@ -166,7 +166,7 @@ class BookController extends Controller
         }
 
         // Can't delete if book is currently loaned or in active requests
-        if ($book->status === 'loaned' || $book->loanRequests()->whereIn('status', ['pending', 'approved'])->exists()) {
+        if ($book->status === 'loaned' || $book->loanRequests()->whereIn('status', ['pending', 'accepted'])->exists()) {
             return back()->with('error', 'Cannot delete book with active loan requests or while loaned.');
         }
 

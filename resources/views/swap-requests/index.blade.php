@@ -21,6 +21,11 @@
                     <h4><i class="fas fa-exchange-alt"></i> My Swap Requests</h4>
                     <div class="card-header-action">
                         <span class="badge badge-primary">{{ $myRequests->total() }} Total</span>
+                        <button type="button" class="btn btn-outline-danger btn-sm ml-2"
+                                onclick="confirmClearSwapHistory()"
+                                title="Clear completed/cancelled/rejected requests">
+                            <i class="fas fa-broom"></i> Clear History
+                        </button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -32,6 +37,7 @@
                                         <th>I Want</th>
                                         <th>I Offer</th>
                                         <th>Owner</th>
+                                        <th>Duration</th>
                                         <th>Status</th>
                                         <th>Requested</th>
                                         <th>Actions</th>
@@ -87,6 +93,15 @@
                                             </div>
                                         </td>
                                         <td>
+                                            @if($request->duration_days && $request->duration_type)
+                                                <span class="badge badge-info">
+                                                    {{ $request->duration_days }} {{ ucfirst($request->duration_type) }}{{ $request->duration_days > 1 ? 's' : '' }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if($request->status === 'pending')
                                                 <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>
                                             @elseif($request->status === 'accepted')
@@ -107,11 +122,35 @@
                                                    class="btn btn-outline-primary" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+
+                                                @if($request->status === 'accepted')
+                                                    @if($request->invoice)
+                                                        <a href="{{ route('invoices.show', $request->invoice) }}"
+                                                           class="btn btn-outline-info" title="View Invoice">
+                                                            <i class="fas fa-file-invoice"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    <button type="button" class="btn btn-outline-success"
+                                                            onclick="confirmReturn({{ $request->id }})"
+                                                            title="Return Books">
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                @endif
+
                                                 @if($request->status === 'pending')
                                                     <button type="button" class="btn btn-outline-danger"
                                                             onclick="confirmCancel({{ $request->id }})"
                                                             title="Cancel Request">
                                                         <i class="fas fa-times"></i>
+                                                    </button>
+                                                @endif
+
+                                                @if(in_array($request->status, ['completed', 'cancelled', 'rejected']))
+                                                    <button type="button" class="btn btn-outline-secondary"
+                                                            onclick="confirmDeleteSwap({{ $request->id }})"
+                                                            title="Delete Request">
+                                                        <i class="fas fa-trash"></i>
                                                     </button>
                                                 @endif
                                             </div>
@@ -161,6 +200,7 @@
                                         <th>Requester</th>
                                         <th>My Book</th>
                                         <th>Offered Book</th>
+                                        <th>Duration</th>
                                         <th>Status</th>
                                         <th>Requested</th>
                                         <th>Actions</th>
@@ -221,6 +261,15 @@
                                             </div>
                                         </td>
                                         <td>
+                                            @if($request->duration_days && $request->duration_type)
+                                                <span class="badge badge-info">
+                                                    {{ $request->duration_days }} {{ ucfirst($request->duration_type) }}{{ $request->duration_days > 1 ? 's' : '' }}
+                                                </span>
+                                            @else
+                                                <span class="text-muted">Not set</span>
+                                            @endif
+                                        </td>
+                                        <td>
                                             @if($request->status === 'pending')
                                                 <span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>
                                             @elseif($request->status === 'accepted')
@@ -241,6 +290,22 @@
                                                    class="btn btn-outline-primary" title="View Details">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
+
+                                                @if($request->status === 'accepted')
+                                                    @if($request->invoice)
+                                                        <a href="{{ route('invoices.show', $request->invoice) }}"
+                                                           class="btn btn-outline-info" title="View Invoice">
+                                                            <i class="fas fa-file-invoice"></i>
+                                                        </a>
+                                                    @endif
+
+                                                    <button type="button" class="btn btn-outline-success"
+                                                            onclick="confirmReturn({{ $request->id }})"
+                                                            title="Return Books">
+                                                        <i class="fas fa-undo"></i>
+                                                    </button>
+                                                @endif
+
                                                 @if($request->status === 'pending')
                                                     <button type="button" class="btn btn-outline-success"
                                                             onclick="confirmApprove({{ $request->id }})"
@@ -324,6 +389,19 @@
     @csrf
 </form>
 
+<form id="returnForm" method="POST" style="display: none;">
+    @csrf
+</form>
+
+<form id="deleteSwapForm" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<form id="clearSwapHistoryForm" method="POST" action="{{ route('swap-requests.clear-history') }}" style="display: none;">
+    @csrf
+</form>
+
 @push('scripts')
 <script>
 function confirmApprove(requestId) {
@@ -337,6 +415,26 @@ function confirmCancel(requestId) {
     if (confirm('Are you sure you want to cancel this swap request?')) {
         document.getElementById('cancelForm').action = '{{ url("/") }}/swap-requests/' + requestId + '/cancel';
         document.getElementById('cancelForm').submit();
+    }
+}
+
+function confirmReturn(requestId) {
+    if (confirm('Are you sure you want to return the books? This will mark the swap as completed.')) {
+        document.getElementById('returnForm').action = '{{ url("/") }}/swap-requests/' + requestId + '/return';
+        document.getElementById('returnForm').submit();
+    }
+}
+
+function confirmDeleteSwap(requestId) {
+    if (confirm('Are you sure you want to delete this swap request? This action cannot be undone.')) {
+        document.getElementById('deleteSwapForm').action = '{{ url("/") }}/swap-requests/' + requestId;
+        document.getElementById('deleteSwapForm').submit();
+    }
+}
+
+function confirmClearSwapHistory() {
+    if (confirm('Are you sure you want to clear all completed, cancelled, and rejected swap requests? This action cannot be undone.')) {
+        document.getElementById('clearSwapHistoryForm').submit();
     }
 }
 </script>

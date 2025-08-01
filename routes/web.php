@@ -94,6 +94,13 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
     Route::post('/loan-requests/{loanRequest}/reject', [Con\LoanRequestController::class, 'reject'])->name('loan-requests.reject');
     Route::post('/loan-requests/{loanRequest}/cancel', [Con\LoanRequestController::class, 'cancel'])->name('loan-requests.cancel');
     Route::post('/loan-requests/{loanRequest}/return', [Con\LoanRequestController::class, 'markReturned'])->name('loan-requests.return');
+    Route::delete('/loan-requests/{loanRequest}', [Con\LoanRequestController::class, 'destroy'])->name('loan-requests.destroy');
+    Route::post('/loan-requests/clear-history', [Con\LoanRequestController::class, 'clearHistory'])->name('loan-requests.clear-history');
+
+    // Invoices
+    Route::get('/invoices/{invoice}', [Con\InvoiceController::class, 'show'])->name('invoices.show');
+    Route::get('/invoices/{invoice}/download', [Con\InvoiceController::class, 'download'])->name('invoices.download');
+    Route::get('/invoices/{invoice}/print', [Con\InvoiceController::class, 'print'])->name('invoices.print');
 
     // Swap Requests
     Route::get('/swap-requests', [Con\SwapRequestController::class, 'index'])->name('swap-requests.index');
@@ -103,6 +110,9 @@ Route::group(['namespace' => 'App\Http\Controllers', 'middleware' => ['auth']], 
     Route::post('/swap-requests/{swapRequest}/approve', [Con\SwapRequestController::class, 'approve'])->name('swap-requests.approve');
     Route::post('/swap-requests/{swapRequest}/reject', [Con\SwapRequestController::class, 'reject'])->name('swap-requests.reject');
     Route::post('/swap-requests/{swapRequest}/cancel', [Con\SwapRequestController::class, 'cancel'])->name('swap-requests.cancel');
+    Route::post('/swap-requests/{swapRequest}/return', [Con\SwapRequestController::class, 'returnBooks'])->name('swap-requests.return');
+    Route::delete('/swap-requests/{swapRequest}', [Con\SwapRequestController::class, 'destroy'])->name('swap-requests.destroy');
+    Route::post('/swap-requests/clear-history', [Con\SwapRequestController::class, 'clearHistory'])->name('swap-requests.clear-history');
 
     // Admin Routes
     Route::group(['middleware' => 'role:Admin', 'prefix' => 'admin', 'as' => 'admin.'], function () {
