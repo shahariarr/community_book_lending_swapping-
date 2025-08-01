@@ -4,8 +4,7 @@
 
 @section('content')
     <!-- Start Page Title Area -->
-    <div class="page-title-area bg-6">
-        <div class="container">
+ <div class="page-title-area bg-2" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ asset('frontend/assets/images/team/library-interior-with-bookshelves-soft-lighting.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">        <div class="container">
             <div class="page-title-content">
                 <h2>Book Exchange Blog</h2>
 
@@ -32,13 +31,13 @@
                         <div class="col-lg-12">
                             <div class="single-blog wow animate__animated animate__fadeInUp delay-0-2s ">
                                 <a href="#">
-                                    <img src="{{ asset('frontend/assets/images/blog/blog-1.jpg') }}" alt="Image">
+                                    <img src="{{ asset('frontend/assets/images/team/large-collection-old-books-wooden-shelves-generated-by-ai.jpg') }}" alt="Image">
                                 </a>
                                 <div class="blog-content">
                                     <ul>
                                         <li>
                                             <a href="#">
-                                                <img src="{{ asset('frontend/assets/images/blog/user-1.jpg') }}" alt="Image">
+                                                <img src="{{ asset('frontend/assets/images/team/abundant-collection-antique-books-wooden-shelves-generated-by-ai.jpg') }}" alt="Image">
                                                 By Sarah Johnson
                                             </a>
                                         </li>
@@ -70,13 +69,13 @@
                         <div class="col-lg-12">
                             <div class="single-blog wow animate__animated animate__fadeInUp delay-0-4s ">
                                 <a href="#">
-                                    <img src="{{ asset('frontend/assets/images/blog/blog-2.jpg') }}" alt="Image">
+                                    <img src="{{ asset('frontend/assets/images/team/library-interior-with-bookshelves-soft-lighting.jpg') }}" alt="Image">
                                 </a>
                                 <div class="blog-content">
                                     <ul>
                                         <li>
                                             <a href="#">
-                                                <img src="{{ asset('frontend/assets/images/blog/user-2.jpg') }}" alt="Image">
+                                                <img src="{{ asset('frontend/assets/images/team/large-collection-old-books-wooden-shelves-generated-by-ai.jpg') }}" alt="Image">
                                                 By Michael Chen
                                             </a>
                                         </li>
@@ -108,13 +107,13 @@
                         <div class="col-lg-12">
                             <div class="single-blog wow animate__animated animate__fadeInUp delay-0-6s ">
                                 <a href="#">
-                                    <img src="{{ asset('frontend/assets/images/blog/blog-3.jpg') }}" alt="Image">
+                                    <img src="{{ asset('frontend/assets/images/team/library-with-books.jpg') }}" alt="Image">
                                 </a>
                                 <div class="blog-content">
                                     <ul>
                                         <li>
                                             <a href="#">
-                                                <img src="{{ asset('frontend/assets/images/blog/user-3.jpg') }}" alt="Image">
+                                                <img src="{{ asset('frontend/assets/images/team/3d-rendering-classic-interior.jpg') }}" alt="Image">
                                                 By Emma Rodriguez
                                             </a>
                                         </li>
@@ -214,7 +213,7 @@
                             </ul>
                         </div>
 
-                        <div class="sidebar-widget recent-post">
+                        {{-- <div class="sidebar-widget recent-post">
                             <h3>Featured Books</h3>
 
                             <article class="item">
@@ -264,7 +263,7 @@
                                     <h5>Available for Swap</h5>
                                 </div>
                             </article>
-                        </div>
+                        </div> --}}
 
                         <div class="sidebar-widget tags">
                             <h3>Popular Tags</h3>

@@ -3,8 +3,7 @@
 @section('title', 'Contact Us - BookBub')
 
 @section('content')
-    <div class="page-title-area bg-4">
-        <div class="container">
+ <div class="page-title-area bg-2" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ asset('frontend/assets/images/team/library-interior-with-bookshelves-soft-lighting.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">        <div class="container">
             <div class="page-title-content">
                 <h2>Contact Us</h2>
 

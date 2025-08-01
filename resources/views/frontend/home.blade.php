@@ -4,7 +4,7 @@
 
 @section('content')
     <!-- Start Banner Area -->
-    <div class="banner-area bg-2">
+    <div class="banner-area bg-2" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ asset('frontend/assets/images/team/library-interior-with-bookshelves-soft-lighting.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat;">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-7">
