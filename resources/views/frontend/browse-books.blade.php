@@ -194,7 +194,7 @@
                                                 @if($book->user && $book->user->image)
                                                     <img src="{{ asset('storage/' . $book->user->image) }}" alt="Book Owner">
                                                 @else
-                                                    <img src="{{ asset('frontend/assets/images/agents/agent-' . (($loop->index % 5) + 1) . '.jpg') }}" alt="Book Owner">
+                                                    <img src="{{ asset('backend/assets/img/avatar/xyz.png') }}" alt="Book Owner">
                                                 @endif
                                                 By {{ $book->user ? $book->user->name : 'Unknown' }}
                                             </a>
