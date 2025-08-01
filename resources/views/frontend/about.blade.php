@@ -55,7 +55,7 @@
                 <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
                     <div class="single-can-help wow animate__animated animate__fadeInUp delay-0-6s h-100">
                         <div class="help-icon">
-                            <img src="{{ asset('frontend/assets/images/team/5037820_31683.jpg') }}" alt="Community Connection Service" class="img-fluid">
+                            <img src="{{ asset('frontend/assets/images/team/5037820_31683-removebg-preview.png') }}" alt="Community Connection Service" class="img-fluid">
                         </div>
                         <h3>Community Connection</h3>
                         <p>Connect with fellow book lovers in your area. Build relationships through shared love of reading and literature.</p>
