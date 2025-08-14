@@ -12,6 +12,56 @@
         </div>
     </div>
 
+    <div class="others-option-for-responsive">
+        <div class="container">
+            <div class="dot-menu">
+                <div class="inner">
+                    <div class="circle circle-one"></div>
+                    <div class="circle circle-two"></div>
+                    <div class="circle circle-three"></div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="option-inner">
+                    <div class="others-options justify-content-center d-flex align-items-center">
+                        <ul>
+
+                            <li>
+                                @auth
+                                    <a href="{{ route('dashboard') }}" class="login">
+                                        @if(auth()->user()->profile_image)
+                                            <img src="{{ asset('storage/' . auth()->user()->profile_image) }}" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%;">
+                                        @else
+                                            <i class="ri-user-line"></i>
+                                        @endif
+                                    </a>
+                                @else
+                                    <a href="{{ url('/login') }}" class="login">
+                                        <i class="ri-user-line"></i>
+                                    </a>
+                                @endauth
+                            </li>
+                            <li>
+                                <a href="{{ url('/login') }}" class="default-btn btn-radius">
+                                    Add Listing
+                                </a>
+                            </li>
+                            <li>
+                                <form class="search-form">
+                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <button type="submit" class="src-btn">
+                                        <i class="ri-search-line"></i>
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="desktop-nav">
         <div class="container-fluid">
             <nav class="navbar navbar-expand-md navbar-light">
