@@ -489,7 +489,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="mr-3">
-                                                    <img src="{{ $user->image ? asset('storage/' . $user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
+                                                    <img src="{{ $user->image ? asset($user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
                                                          alt="{{ $user->name }}"
                                                          class="user-avatar">
                                                 </div>

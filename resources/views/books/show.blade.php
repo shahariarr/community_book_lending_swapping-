@@ -22,7 +22,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <img src="{{ $book->image ? asset('storage/' . $book->image) : asset('backend/assets/img/books/default.png') }}"
+                            <img src="{{ $book->image ? asset($book->image) : asset('backend/assets/img/books/default.png') }}"
                                  alt="{{ $book->title }}"
                                  class="img-fluid rounded shadow"
                                  style="width: 100%; max-height: 400px; object-fit: cover;">
@@ -110,7 +110,7 @@
                     @if($book->description)
                     <div class="mt-4">
                         <h5>Description</h5>
-                        <p class="text-justify">{{ $book->description }}</p>
+                        <p class="text-justify">{!! $book->description !!}</p>
                     </div>
                     @endif
                 </div>
@@ -127,7 +127,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="mr-3">
-                            <img src="{{ $book->user->image ? asset('storage/' . $book->user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
+                            <img src="{{ $book->user->image ? asset($book->user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
                                  alt="{{ $book->user->name }}"
                                  style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
                         </div>

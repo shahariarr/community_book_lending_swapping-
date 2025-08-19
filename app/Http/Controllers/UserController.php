@@ -121,7 +121,6 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
 {
     $input = $request->all();
-    $path = 'images';
 
     // Handle reading interests - convert comma-separated string to array
     if (!empty($input['reading_interests'])) {
@@ -132,13 +131,22 @@ class UserController extends Controller
     }
 
     if ($request->hasFile('image')) {
-        $old_image = $user->image;
-        if ($old_image && file_exists(public_path('storage/' . $old_image))) {
-            unlink(public_path('storage/' . $old_image));
+        // Delete old image if exists
+        if ($user->image && file_exists(public_path($user->image))) {
+            unlink(public_path($user->image));
         }
-        $image_name = auth()->user()->id . time() . '.' . $request->image->extension();
-        $request->image->move(public_path('storage/' . $path), $image_name);
-        $input['image'] = $path . '/' . $image_name;
+
+        // Generate filename and store directly in public/images/
+        $image_name = auth()->user()->id . '_' . time() . '.' . $request->image->extension();
+        $destination = public_path('images');
+
+        // Create directory if it doesn't exist
+        if (!file_exists($destination)) {
+            mkdir($destination, 0755, true);
+        }
+
+        $request->image->move($destination, $image_name);
+        $input['image'] = 'images/' . $image_name; // Store relative path
     } else {
         $input['image'] = $user->image;
     }

@@ -40,7 +40,7 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $book->image ? asset('storage/' . $book->image) : asset('backend/assets/img/book-placeholder.jpg') }}"
+                                            <img src="{{ $book->image ? asset($book->image) : asset('backend/assets/img/book-placeholder.jpg') }}"
                                                  alt="Book Cover" class="rounded mr-2" style="width: 50px; height: 60px; object-fit: cover;">
                                             <div>
                                                 <strong>{{ $book->title }}</strong><br>
@@ -50,7 +50,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $book->user->profile_image ? asset('storage/' . $book->user->profile_image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
+                                            <img src="{{ $book->user->image ? asset($book->user->image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
                                                  alt="Avatar" class="rounded-circle mr-2" style="width: 30px; height: 30px;">
                                             <div>
                                                 <strong>{{ $book->user->name }}</strong><br>

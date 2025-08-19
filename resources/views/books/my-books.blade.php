@@ -45,7 +45,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="mr-3">
-                                                    <img src="{{ $book->image ? asset('storage/' . $book->image) : asset('backend/assets/img/books/default.png') }}"
+                                                    <img src="{{ $book->image ? asset($book->image) : asset('backend/assets/img/books/default.png') }}"
                                                          alt="{{ $book->title }}"
                                                          style="width: 50px; height: 60px; object-fit: cover;"
                                                          class="rounded">

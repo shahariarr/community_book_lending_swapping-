@@ -49,7 +49,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $request->borrower->profile_image ? asset('storage/' . $request->borrower->profile_image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
+                                            <img src="{{ $request->borrower->image ? asset($request->borrower->image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
                                                  alt="Avatar" class="rounded-circle mr-2" style="width: 30px; height: 30px;">
                                             <div>
                                                 <strong>{{ $request->borrower->name }}</strong><br>
@@ -59,7 +59,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $request->lender->profile_image ? asset('storage/' . $request->lender->profile_image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
+                                            <img src="{{ $request->lender->image ? asset($request->lender->image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
                                                  alt="Avatar" class="rounded-circle mr-2" style="width: 30px; height: 30px;">
                                             <div>
                                                 <strong>{{ $request->lender->name }}</strong><br>

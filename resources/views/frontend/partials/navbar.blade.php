@@ -30,8 +30,8 @@
                             <li>
                                 @auth
                                     <a href="{{ route('dashboard') }}" class="login">
-                                        @if(auth()->user()->profile_image)
-                                            <img src="{{ asset('storage/' . auth()->user()->profile_image) }}" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%;">
+                                        @if(auth()->user()->image)
+                                            <img src="{{ asset(auth()->user()->image) }}" alt="Profile" style="width: 24px; height: 24px; border-radius: 50%;">
                                         @else
                                             <i class="ri-user-line"></i>
                                         @endif
@@ -144,8 +144,8 @@
 
                                 <li class="dropdown">
                                     <a href="#" class="login dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        @if(auth()->user()->profile_image)
-                                            <img src="{{ asset('storage/' . auth()->user()->profile_image) }}" alt="Profile" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
+                                        @if(auth()->user()->image)
+                                            <img src="{{ asset(auth()->user()->image) }}" alt="Profile" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 8px;">
                                         @else
                                             <i class="ri-user-fill"></i>
                                         @endif

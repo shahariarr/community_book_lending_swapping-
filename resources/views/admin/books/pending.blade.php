@@ -41,7 +41,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="mr-3">
-                                                    <img src="{{ $book->image ? asset('storage/' . $book->image) : asset('backend/assets/img/books/default.png') }}"
+                                                    <img src="{{ $book->image ? asset($book->image) : asset('backend/assets/img/books/default.png') }}"
                                                          alt="{{ $book->title }}"
                                                          style="width: 50px; height: 60px; object-fit: cover;"
                                                          class="rounded">
@@ -64,7 +64,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="mr-2">
-                                                    <img src="{{ $book->user->image ? asset('storage/' . $book->user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
+                                                    <img src="{{ $book->user->image ? asset($book->user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
                                                          alt="{{ $book->user->name }}"
                                                          style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
                                                 </div>

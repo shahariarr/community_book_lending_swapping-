@@ -85,7 +85,7 @@
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="mr-2">
-                                                    <img src="{{ $request->requestedBook->user->image ? asset('storage/' . $request->requestedBook->user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
+                                                    <img src="{{ $request->requestedBook->user->image ? asset($request->requestedBook->user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
                                                          alt="{{ $request->requestedBook->user->name }}"
                                                          style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover;">
                                                 </div>

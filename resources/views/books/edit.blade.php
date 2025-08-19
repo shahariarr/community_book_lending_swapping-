@@ -163,7 +163,7 @@
                             <label for="image">Book Cover Image</label>
                             @if($book->image)
                                 <div class="mb-2">
-                                    <img src="{{ asset('storage/' . $book->image) }}" alt="Current book cover" class="img-thumbnail" style="max-height: 200px;">
+                                    <img src="{{ asset($book->image) }}" alt="Current book cover" class="img-thumbnail" style="max-height: 200px;">
                                     <p class="text-muted small">Current image</p>
                                 </div>
                             @endif

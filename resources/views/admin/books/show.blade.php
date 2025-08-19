@@ -18,7 +18,7 @@
             <div class="col-12 col-md-6 col-lg-4">
                 <div class="card">
                     <div class="card-body text-center">
-                        <img src="{{ $book->image ? asset('storage/' . $book->image) : asset('backend/assets/img/book-placeholder.jpg') }}"
+                        <img src="{{ $book->image ? asset($book->image) : asset('backend/assets/img/book-placeholder.jpg') }}"
                              alt="Book Cover" class="img-fluid rounded mb-3" style="max-height: 300px;">
 
                         <h5>{{ $book->title }}</h5>
@@ -138,7 +138,7 @@
                         @if($book->description)
                             <div class="mt-3">
                                 <h6>Description:</h6>
-                                <p>{{ $book->description }}</p>
+                                <p>{!! $book->description !!}</p>
                             </div>
                         @endif
                     </div>

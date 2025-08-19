@@ -53,7 +53,7 @@
                                                 </div>
                                                 <p class="mb-2"><strong>Owner:</strong> {{ $book->user->name }}</p>
                                                 @if($book->description)
-                                                    <p class="text-muted">{{ Str::limit($book->description, 150) }}</p>
+                                                    <p class="text-muted">{!! Str::limit($book->description, 150) !!}</p>
                                                 @endif
                                             </div>
                                         </div>

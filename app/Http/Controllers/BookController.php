@@ -75,53 +75,73 @@ class BookController extends Controller
     }
 
     public function store(Request $request)
-    {
-        try {
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'author' => 'required|string|max:255',
-                'isbn' => 'nullable|string|max:20',
-                'description' => 'required|string',
-                'category_id' => 'required|exists:book_categories,id',
-                'condition' => 'required|in:new,like_new,good,fair,poor',
-                'availability_type' => 'required|in:loan,swap,both',
-                'published_date' => 'nullable|date',
-                'language' => 'nullable|string|max:10',
-                'page_count' => 'nullable|integer|min:1',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
+{
+    try {
+        // Validate input
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:20',
+            'description' => 'required|string',
+            'category_id' => 'required|exists:book_categories,id',
+            'condition' => 'required|in:new,like_new,good,fair,poor',
+            'availability_type' => 'required|in:loan,swap,both',
+            'published_date' => 'nullable|date',
+            'language' => 'nullable|string|max:10',
+            'page_count' => 'nullable|integer|min:1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
 
-            $data = $request->all();
-            $data['user_id'] = Auth::id();
+        // Collect input data
+        $data = $request->only([
+            'title', 'author', 'isbn', 'description',
+            'category_id', 'condition', 'availability_type',
+            'published_date', 'language', 'page_count'
+        ]);
+        $data['user_id'] = Auth::id();
 
-            // Check if auto-approval is enabled
-            $autoApprove = config('app.auto_approve_books', false);
-
-            if ($autoApprove) {
-                $data['is_approved'] = true;
-                $data['approved_at'] = now();
-                $data['approved_by'] = Auth::id();
-                $data['status'] = 'available';
-            } else {
-                $data['is_approved'] = false; // Requires admin approval
-                $data['status'] = 'unavailable'; // Will be available after approval
-            }
-
-            // Handle image upload
-            if ($request->hasFile('image')) {
-                $data['image'] = $request->file('image')->store('books', 'public');
-            }
-
-            $book = Book::create($data);
-
-            return redirect()->route('books.my-books')
-                ->with('success', 'Book upload request submitted! It will be visible after admin approval.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create book. Please try again.')->withInput();
+        // Auto approval
+        $autoApprove = config('app.auto_approve_books', false);
+        if ($autoApprove) {
+            $data['is_approved'] = true;
+            $data['approved_at'] = now();
+            $data['approved_by'] = Auth::id();
+            $data['status'] = 'available';
+        } else {
+            $data['is_approved'] = false;
+            $data['status'] = 'unavailable';
         }
+
+        // Handle image upload (InfinityFree compatible)
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            // Save file directly in public_html/books
+            $destination = public_path('books');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+            $data['image'] = 'books/' . $filename; // relative path for DB
+        }
+
+        // Create book
+        Book::create($data);
+
+        return redirect()->route('books.my-books')
+            ->with('success', 'Book upload request submitted! It will be visible after admin approval.');
     }
+    catch (\Illuminate\Validation\ValidationException $e) {
+        return back()->withErrors($e->errors())->withInput();
+    }
+    catch (\Exception $e) {
+        return back()->with('error', 'Failed to create book: ' . $e->getMessage())->withInput();
+    }
+}
+
+
 
     public function edit(Book $book)
     {
@@ -139,56 +159,76 @@ class BookController extends Controller
     }
 
     public function update(Request $request, Book $book)
-    {
-        try {
-            // Only owner can edit
-            if ($book->user_id !== Auth::id()) {
-                abort(403);
-            }
-
-            $request->validate([
-                'title' => 'required|string|max:255',
-                'author' => 'required|string|max:255',
-                'isbn' => 'nullable|string|max:20',
-                'description' => 'required|string',
-                'category_id' => 'required|exists:book_categories,id',
-                'condition' => 'required|in:new,like_new,good,fair,poor',
-                'availability_type' => 'required|in:loan,swap,both',
-                'published_date' => 'nullable|date',
-                'language' => 'nullable|string|max:10',
-                'page_count' => 'nullable|integer|min:1',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
-            ]);
-
-            $data = $request->all();
-
-            // Handle image upload
-            if ($request->hasFile('image')) {
-                // Delete old image
-                if ($book->image) {
-                    Storage::disk('public')->delete($book->image);
-                }
-                $data['image'] = $request->file('image')->store('books', 'public');
-            }
-
-            // If book was approved and content changed significantly, require re-approval
-            if ($book->is_approved && ($book->title !== $data['title'] || $book->description !== $data['description'])) {
-                $data['is_approved'] = false;
-                $data['status'] = 'unavailable';
-                $message = 'Book updated! Since major changes were made, it requires admin re-approval.';
-            } else {
-                $message = 'Book updated successfully!';
-            }
-
-            $book->update($data);
-
-            return redirect()->route('books.my-books')->with('success', $message);
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            return back()->with('error', 'Failed to update book. Please try again.')->withInput();
+{
+    try {
+        // Only owner can edit
+        if ($book->user_id !== Auth::id()) {
+            abort(403);
         }
+
+        // Validate input
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'author' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:20',
+            'description' => 'required|string',
+            'category_id' => 'required|exists:book_categories,id',
+            'condition' => 'required|in:new,like_new,good,fair,poor',
+            'availability_type' => 'required|in:loan,swap,both',
+            'published_date' => 'nullable|date',
+            'language' => 'nullable|string|max:10',
+            'page_count' => 'nullable|integer|min:1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Collect input
+        $data = $request->only([
+            'title', 'author', 'isbn', 'description',
+            'category_id', 'condition', 'availability_type',
+            'published_date', 'language', 'page_count'
+        ]);
+
+        // Handle image upload (InfinityFree compatible)
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($book->image && file_exists(public_path($book->image))) {
+                unlink(public_path($book->image));
+            }
+
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $destination = public_path('books');
+            if (!file_exists($destination)) {
+                mkdir($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+            $data['image'] = 'books/' . $filename; // save relative path
+        }
+
+        // If book was approved and major content changed, require re-approval
+        if ($book->is_approved && ($book->title !== $data['title'] || $book->description !== $data['description'])) {
+            $data['is_approved'] = false;
+            $data['status'] = 'unavailable';
+            $message = 'Book updated! Since major changes were made, it requires admin re-approval.';
+        } else {
+            $message = 'Book updated successfully!';
+        }
+
+        // Update book
+        $book->update($data);
+
+        return redirect()->route('books.my-books')->with('success', $message);
     }
+    catch (\Illuminate\Validation\ValidationException $e) {
+        return back()->withErrors($e->errors())->withInput();
+    }
+    catch (\Exception $e) {
+        return back()->with('error', 'Failed to update book: ' . $e->getMessage())->withInput();
+    }
+}
+
 
     public function destroy(Book $book)
     {

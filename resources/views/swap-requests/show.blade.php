@@ -68,7 +68,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="text-center mb-3">
-                                        <img src="{{ $swapRequest->requestedBook->image ? asset('storage/' . $swapRequest->requestedBook->image) : asset('backend/assets/img/books/default.png') }}"
+                                        <img src="{{ $swapRequest->requestedBook->image ? asset($swapRequest->requestedBook->image) : asset('backend/assets/img/books/default.png') }}"
                                              alt="{{ $swapRequest->requestedBook->title }}"
                                              class="img-fluid rounded shadow"
                                              style="max-height: 200px;">
@@ -99,7 +99,7 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="text-center mb-3">
-                                        <img src="{{ $swapRequest->offeredBook->image ? asset('storage/' . $swapRequest->offeredBook->image) : asset('backend/assets/img/books/default.png') }}"
+                                        <img src="{{ $swapRequest->offeredBook->image ? asset($swapRequest->offeredBook->image) : asset('backend/assets/img/books/default.png') }}"
                                              alt="{{ $swapRequest->offeredBook->title }}"
                                              class="img-fluid rounded shadow"
                                              style="max-height: 200px;">

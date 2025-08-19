@@ -38,7 +38,7 @@ $user = Auth::user();
             <div class="col-12 col-md-12 col-lg-5">
                 <div class="card profile-widget">
                     <div class="profile-widget-header">
-                        <img alt="image" src="{{ $user->image ? asset('storage/' . $user->image) : asset('backend/assets/img/avatar/xyz.png') }}" class="rounded-circle profile-widget-picture">
+                        <img alt="image" src="{{ $user->image ? asset($user->image) : asset('backend/assets/img/avatar/xyz.png') }}" class="rounded-circle profile-widget-picture">
                     </div>
                     <div class="profile-widget-description">
                         <div class="mb-3 row">

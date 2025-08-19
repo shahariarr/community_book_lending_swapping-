@@ -47,7 +47,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-3">
-                                    <img src="{{ $loanRequest->book->image ? asset('storage/' . $loanRequest->book->image) : asset('backend/assets/img/books/default.png') }}"
+                                    <img src="{{ $loanRequest->book->image ? asset($loanRequest->book->image) : asset('backend/assets/img/books/default.png') }}"
                                          alt="{{ $loanRequest->book->title }}"
                                          class="img-fluid rounded shadow"
                                          style="max-height: 200px;">

@@ -17,7 +17,7 @@
                 <div class="card-body">
                     <div class="d-flex align-items-center">
                         <div class="mr-3">
-                            <img src="{{ $user->image ? asset('storage/' . $user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
+                            <img src="{{ $user->image ? asset($user->image) : asset('backend/assets/img/avatar/xyz.png') }}"
                                  alt="Profile Image"
                                  style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
                         </div>
@@ -326,7 +326,7 @@
                             <div class="col-md-12">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle mr-2"></i>
-                                    <strong>Top Category:</strong> 
+                                    <strong>Top Category:</strong>
                                     @if($stats['top_category'])
                                         "{{ $stats['top_category']->name }}" has the most books ({{ $stats['top_category']->books_count }} books)
                                     @else
@@ -341,9 +341,9 @@
                                 <div class="card border-left-primary h-100">
                                     <div class="card-body text-center p-3">
                                         @if($category->image)
-                                            <img src="{{ asset('storage/category-images/' . $category->image) }}" 
-                                                 alt="{{ $category->name }}" 
-                                                 class="rounded-circle mb-2" 
+                                            <img src="{{ asset('storage/category-images/' . $category->image) }}"
+                                                 alt="{{ $category->name }}"
+                                                 class="rounded-circle mb-2"
                                                  style="width: 40px; height: 40px; object-fit: cover;">
                                         @else
                                             <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center"
@@ -375,9 +375,9 @@
                                 <div class="card border-left-primary h-100">
                                     <div class="card-body text-center p-3">
                                         @if($category->image)
-                                            <img src="{{ asset('storage/category-images/' . $category->image) }}" 
-                                                 alt="{{ $category->name }}" 
-                                                 class="rounded-circle mb-2" 
+                                            <img src="{{ asset('storage/category-images/' . $category->image) }}"
+                                                 alt="{{ $category->name }}"
+                                                 class="rounded-circle mb-2"
                                                  style="width: 40px; height: 40px; object-fit: cover;">
                                         @else
                                             <div class="rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center"
@@ -819,7 +819,7 @@
                                     <div class="card-body p-3">
                                         <div class="d-flex">
                                             <div class="mr-3">
-                                                <img src="{{ $book->image ? asset('storage/' . $book->image) : asset('backend/assets/img/books/default.png') }}"
+                                                <img src="{{ $book->image ? asset($book->image) : asset('backend/assets/img/books/default.png') }}"
                                                      alt="{{ $book->title }}"
                                                      style="width: 50px; height: 60px; object-fit: cover;"
                                                      class="rounded">
@@ -898,7 +898,7 @@
 
 <script>
 // Global chart variables
-let statisticsChart, userBooksChart, requestChart, adminSystemChart, categoryDistributionChart, 
+let statisticsChart, userBooksChart, requestChart, adminSystemChart, categoryDistributionChart,
     monthlyTrendsChart, loanRequestStatusChart, swapRequestStatusChart;
 
 // Statistics data from backend
@@ -941,7 +941,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // Main Statistics Chart with different types
 function initializeMainChart() {
     const ctx = document.getElementById('statisticsChart').getContext('2d');
-    
+
     const chartData = {
         labels: ['My Books', 'Approved Books', 'Pending Books', 'Available Books', 'My Loan Requests', 'Loan Requests for My Books', 'My Swap Requests', 'Swap Requests for My Books'],
         datasets: [{
@@ -1007,7 +1007,7 @@ function initializeMainChart() {
 // User Books Analysis Chart (Doughnut)
 function initializeUserBooksChart() {
     const ctx = document.getElementById('userBooksChart').getContext('2d');
-    
+
     userBooksChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
@@ -1054,7 +1054,7 @@ function initializeUserBooksChart() {
 // Request Statistics Chart (Horizontal Bar)
 function initializeRequestChart() {
     const ctx = document.getElementById('requestChart').getContext('2d');
-    
+
     requestChart = new Chart(ctx, {
         type: 'horizontalBar',
         data: {
@@ -1112,7 +1112,7 @@ function initializeAdminCharts() {
     // Category Distribution Chart
     const categoryCtx = document.getElementById('categoryDistributionChart').getContext('2d');
     const categoryData = @json($stats['category_stats'] ?? []);
-    
+
     categoryDistributionChart = new Chart(categoryCtx, {
         type: 'doughnut',
         data: {
@@ -1120,7 +1120,7 @@ function initializeAdminCharts() {
             datasets: [{
                 data: categoryData.map(cat => cat.books_count),
                 backgroundColor: [
-                    colors.primary, colors.success, colors.warning, colors.danger, 
+                    colors.primary, colors.success, colors.warning, colors.danger,
                     colors.info, colors.purple, colors.pink, colors.secondary
                 ],
                 borderWidth: 3,
@@ -1172,7 +1172,7 @@ function initializeAdminCharts() {
     const trendsCtx = document.getElementById('monthlyTrendsChart').getContext('2d');
     const monthlyData = @json($stats['monthly_trends'] ?? []);
     const months = Object.keys(monthlyData);
-    
+
     monthlyTrendsChart = new Chart(trendsCtx, {
         type: 'line',
         data: {
@@ -1258,7 +1258,7 @@ function initializeAdminCharts() {
     // Loan Request Status Chart
     const loanStatusCtx = document.getElementById('loanRequestStatusChart').getContext('2d');
     const loanStats = @json($stats['loan_request_stats'] ?? []);
-    
+
     loanRequestStatusChart = new Chart(loanStatusCtx, {
         type: 'bar',
         data: {
@@ -1298,7 +1298,7 @@ function initializeAdminCharts() {
     // Swap Request Status Chart
     const swapStatusCtx = document.getElementById('swapRequestStatusChart').getContext('2d');
     const swapStats = @json($stats['swap_request_stats'] ?? []);
-    
+
     swapRequestStatusChart = new Chart(swapStatusCtx, {
         type: 'bar',
         data: {
@@ -1337,7 +1337,7 @@ function initializeAdminCharts() {
 
     // System Overview Chart (Grouped Bar)
     const systemCtx = document.getElementById('adminSystemChart').getContext('2d');
-    
+
     adminSystemChart = new Chart(systemCtx, {
         type: 'bar',
         data: {
@@ -1415,7 +1415,7 @@ function showChart(type) {
     }
 
     const ctx = document.getElementById('statisticsChart').getContext('2d');
-    
+
     const chartData = {
         labels: ['My Books', 'Approved', 'Pending', 'Available', 'My Loans', 'Loans Received', 'My Swaps', 'Swaps Received'],
         datasets: [{
@@ -1471,7 +1471,7 @@ function showChart(type) {
             };
             chartConfig.data.datasets[0].borderRadius = 4;
             break;
-            
+
         case 'grouped':
             chartConfig.type = 'bar';
             chartConfig.data.datasets = [
@@ -1499,7 +1499,7 @@ function showChart(type) {
             };
             chartConfig.options.plugins.legend.display = true;
             break;
-            
+
         case 'pie':
             chartConfig.type = 'pie';
             chartConfig.data.datasets[0].borderWidth = 3;
@@ -1567,60 +1567,60 @@ style.textContent = `
             transform: translateY(0);
         }
     }
-    
+
     .chart-container {
         opacity: 0;
         animation: fadeInUp 0.6s ease-out 0.2s forwards;
     }
-    
+
     .btn-group .btn {
         transition: all 0.3s ease;
     }
-    
+
     .card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    
+
     .card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
-    
+
     .border-left-primary {
         border-left: 4px solid #6777ef !important;
     }
-    
+
     .progress {
         border-radius: 10px;
         overflow: hidden;
     }
-    
+
     .progress-bar {
         border-radius: 10px;
     }
-    
+
     .list-group-item {
         border: none;
         padding: 0.75rem 0;
     }
-    
+
     .list-group-item:last-child {
         border-bottom: none !important;
     }
-    
+
     .badge-pill {
         border-radius: 50px;
         padding: 0.5em 0.75em;
         font-size: 0.75em;
         font-weight: 600;
     }
-    
+
     .alert {
         border-radius: 10px;
         border: none;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
-    
+
     .text-truncate {
         white-space: nowrap;
         overflow: hidden;

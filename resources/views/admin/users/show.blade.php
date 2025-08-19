@@ -18,7 +18,7 @@
             <div class="col-12 col-md-4 col-lg-3">
                 <div class="card">
                     <div class="card-body text-center">
-                        <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
+                        <img src="{{ $user->image ? asset($user->image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
                              alt="Profile Image" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
 
                         <h5>{{ $user->name }}</h5>

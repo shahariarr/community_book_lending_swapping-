@@ -143,7 +143,7 @@
                         <a href="#">
                             <div class="book-image-container" style="position: relative;">
                                 @if($book->image)
-                                    <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
+                                    <img src="{{ asset($book->image) }}" alt="{{ $book->title }} Book Cover">
                                 @else
                                     <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
                                 @endif
@@ -195,7 +195,7 @@
                         <a href="#">
                             <div class="book-image-container" style="position: relative;">
                                 @if($book->image)
-                                    <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
+                                    <img src="{{ asset($book->image) }}" alt="{{ $book->title }} Book Cover">
                                 @else
                                     <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
                                 @endif
@@ -247,7 +247,7 @@
                         <a href="#">
                             <div class="book-image-container" style="position: relative;">
                                 @if($book->image)
-                                    <img src="{{ asset('storage/' . $book->image) }}" alt="{{ $book->title }} Book Cover">
+                                    <img src="{{ asset($book->image) }}" alt="{{ $book->title }} Book Cover">
                                 @else
                                     <img src="{{ asset('frontend/assets/images/discover/discover-' . (($index % 6) + 1) . '.jpg') }}" alt="{{ $book->title }} Book Cover">
                                 @endif

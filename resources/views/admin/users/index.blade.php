@@ -41,7 +41,7 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $user->profile_image ? asset('storage/' . $user->profile_image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
+                                            <img src="{{ $user->image ? asset($user->image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
                                                  alt="Avatar" class="rounded-circle mr-2" style="width: 40px; height: 40px;">
                                             <div>
                                                 <strong>{{ $user->name }}</strong>

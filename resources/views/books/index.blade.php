@@ -88,7 +88,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-4">
-                            <img src="{{ $book->image ? asset('storage/' . $book->image) : asset('backend/assets/img/books/default.png') }}"
+                            <img src="{{ $book->image ? asset($book->image) : asset('backend/assets/img/books/default.png') }}"
                                  alt="{{ $book->title }}"
                                  class="img-fluid rounded book-image"
                                  style="height: 120px; width: 100%; object-fit: cover;">
@@ -123,7 +123,7 @@
 
                     @if($book->description)
                     <div class="mt-3">
-                        <p class="text-muted small mb-0">{{ Str::limit($book->description, 80) }}</p>
+                        <p class="text-muted small mb-0">{!! Str::limit($book->description, 80) !!}</p>
                     </div>
                     @endif
 

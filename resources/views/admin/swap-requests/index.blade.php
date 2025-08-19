@@ -39,7 +39,7 @@
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $request->requester->profile_image ? asset('storage/' . $request->requester->profile_image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
+                                            <img src="{{ $request->requester->image ? asset($request->requester->image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
                                                  alt="Avatar" class="rounded-circle mr-2" style="width: 30px; height: 30px;">
                                             <div>
                                                 <strong>{{ $request->requester->name }}</strong><br>
@@ -69,7 +69,7 @@
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="{{ $request->owner->profile_image ? asset('storage/' . $request->owner->profile_image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
+                                            <img src="{{ $request->owner->image ? asset($request->owner->image) : asset('backend/assets/img/avatar/avatar-1.png') }}"
                                                  alt="Avatar" class="rounded-circle mr-2" style="width: 30px; height: 30px;">
                                             <div>
                                                 <strong>{{ $request->owner->name }}</strong><br>
